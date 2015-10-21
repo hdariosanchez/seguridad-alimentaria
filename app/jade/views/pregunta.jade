@@ -1,0 +1,341 @@
+.container-fluid
+    //Encabezado (Datos generales de la encuesta)
+    .row
+        .modal-header
+            h4.text-center.modal-title
+                strong
+                    |{{encuesta.str_titulo}}
+            p.text-center.modal-title
+                strong
+                    |Objetivo:
+                |   {{encuesta.str_objetivo}}
+            p.text-center.modal-title Encuesta No. {{encuesta.int_numero}}
+        .modal-body
+            p.text-left
+                strong
+                    |   Descripción:
+                |   {{encuesta.str_descripcion}}
+            p.text-left
+                strong
+                    |   Destinado a:
+                |   {{encuesta.str_destinado_a}}
+            p.text-left.modal-title
+                strong
+                    |   Instrucciones:
+                |   {{encuesta.srt_instrucciones}}
+            p.text-left
+                strong
+                    |   Fecha de creación:
+                |   {{encuesta.dt_fecha_creacion}}
+            p.text-left
+                strong
+                    |Estado:
+                |   {{encuesta.str_estado}}
+        .modal-footer
+    //Vista de las preguntas guardadas
+    .row
+
+            div.check-element.animate-show(ng-show="true")
+                .thumbnail
+                    .modal-header
+                        h4.text-center.modal-title
+                            strong
+                                | PREGUNTAS GENERADAS
+                    .modal-body
+                        script(type='text/ng-template', id='nodes_renderer.html')
+                            section(id="{{variableSeleccionada}}", ng-if="node.section == variableSeleccionada")
+                                div(ng-class="{'panel panel-default': node.nodes && node.nodes.length > 0}")
+                                    .panel-heading(ng-if="node.nodes && node.nodes.length > 0", ui-tree-handle="")
+                                        i.glyphicon.glyphicon-question-sign(ng-if="node.nodes && node.nodes.length > 0")
+                                        |  {{node.title}}
+                                        a.pull-right.btn.btn-danger.btn-xs(data-nodrag='', ng-click='remove(this)')
+                                            span.glyphicon.glyphicon-remove
+                                        a.pull-right.btn.btn-clipboard.btn-xs(title="Editar Pregunta", data-nodrag="", data-toggle="modal", data-target="#editarPreguntaModal",ng-click="editarPregunta(this)", style="margin-right: 8px;")
+                                            span.glyphicon.glyphicon-edit
+                                div(ng-if="node.nodes && node.nodes.length == 0")
+                                    input(type="{{node.type}}", name="{{node.codigo}}", value="{{node.codigo}}", ng-if="node.type == 'checkbox' || node.type == 'radio'")
+                                    input.form-control.input-sm(type="{{node.type}}", name="{{node.codigo}}", ng-if="node.type == 'text'")
+                                    input.input-lg(type="{{node.type}}", min="{{rango.minimo}}", max="{{rango.maximo}}", ng-model="dato.valor", step="1", ng-if="node.type == 'range'")
+                                    input.form-control.input-sm(type="{{node.type}}", ng-model="dato.valor", ng-if="node.type == 'date'")
+                                    input.form-control.input-sm(type="{{node.type}}", ng-if="node.type == 'time'")
+                                    |  {{node.title}} {{node.cuales}}
+                                    input(type="text", ng-if="node.otros == true")
+                                    p.pull-right {{node.title2}}
+                                div(ng-if="node.nodes.length == 0 && node.productos.length > 0")
+                                    table.table.table-striped.table-bordered
+                                        thead
+                                            tr
+                                                td
+                                                    strong N°
+                                                td
+                                                    strong PRODUCTO
+                                                td
+                                                    strong COSTO
+                                                td
+                                                    strong PESO
+                                                td
+                                                    strong FRECUENCIA
+                                        tbody
+                                            tr(ng-repeat="producto in node.productos")
+                                                td {{$index + 1}}
+                                                td {{producto.str_descripcion}}
+                                                td
+                                                    input.form-control(type="number", ng-model="producto.flt_costo", ng-value="producto.flt_costo")
+                                                td
+                                                    input.form-control(type="number", ng-model="producto.flt_peso", ng-value="producto.flt_peso")
+                                                td
+                                                    ul.text-inline
+                                                        li(ng-repeat="frecuencia in producto.frecuencia")
+                                                            input(type="radio", name="{{node.codigo + producto.int_id}}", ng-model="frecuencia.respuesta", ng-change="")
+                                                            | {{frecuencia.str_descripcion}}
+
+                                    //{"int_id":"149","int_id_padre":"141","flt_numero":"4","str_descripcion":"PRODUCTO HIJO2.4","str_estado":"ACTIVO","nodes":[],"flt_costo":false,"respuesta":true,"flt_peso":false,"frecuencia":[{"int_id":"2","str_descripcion":"Semanal","flt_coeficiente":"4","str_estado":"ACTIVO","respuesta":true}]}
+
+                                ol(ui-tree-nodes="", ng-model="node.nodes", ng-class="{hidden: collapsed}")
+                                    li(ng-repeat="node in node.nodes", ng-include="'nodes_renderer.html'")
+                        #tree-root(ui-tree="", data-drag-enabled="false")
+                            ol(ui-tree-nodes="", ng-model="data")
+                                li(ng-repeat="node in listadoPregunta", ui-tree-node="", ng-include="'nodes_renderer.html'",
+                                ng-if="node.section == variableSeleccionada")
+
+
+    //Variables e ingreso de preguntas
+    .row
+        //Visualización de variables
+        .col-sm-4
+            .thumbnail
+                .input-group
+                    .modal-header
+                        h4.text-center.modal-title
+                            strong
+                                | VARIABLES
+                    .modal-body
+                        ul(ng-model="listadoVariable")
+                            li(type="none", ng-repeat="node in listadoVariable", ng-include="'variable_renderer.html'")
+                    //script para obtener variables con recursividad
+                    script(type='text/ng-template', id='variable_renderer.html')
+                        a.pull-left(href="", title="", ng-click="tester(node)", style="font-size:12px color:black")
+                            | {{node.str_descripcion}}
+                        ul(ng-model="node.nodes", ng-class="{hidden: collapsed}")
+                            li(type="none", ng-repeat="node in node.nodes", ng-include="'variable_renderer.html'")
+        //Gestión de preguntas
+        .col-sm-8
+            .thumbnail
+                    //Mensaje que se muestra antes de seleccionar una variable
+                    div.check-element.animate-show(ng-hide="visibleAnuncio")
+                        .modal-header
+                            h4.text-center.modal-title
+                                strong
+                                    | GESTIÓN DE PREGUNTAS
+                        .modal-body
+                            p.modal-title Por favor seleccione una variable para empezar.
+                            p.modal-title La variable seleccionada se vinculará con la pregunta.
+                    //Panel de gestión de preguntas
+                    div.check-element.animate-show(ng-show="visiblePregunta")
+                        .modal-header
+                            h4.text-center.modal-title
+                                strong
+                                    | GESTIÓN DE PREGUNTAS
+                        .modal-body
+                            .row
+                                .col-sm-6
+                                    h5.text-left.modal-title
+                                        strong
+                                            | VARIABLE:
+                                        |   {{variableSeleccion.nombre}}
+                                .col-sm-6
+                                    .input-group
+                                        .input-group-addon
+                                            |Tipo de pregunta
+                                        select.form-control(ng-model="respuesta.tipoRespuesta", ng-options="tipo as tipo.descripcion for tipo in objTipoPregunta", id="tipoRespuesta")
+                                            option(value="") Ninguno
+                        .modal-footer
+                            .panel.panel-default(id="SubIngreso")
+                                .panel-heading
+                                    .row
+                                        .col-sm-12
+                                            .input-group
+                                                .input-group-addon
+                                                    | Enunciado
+                                                input#textinput.form-control.input-md(ng-model="pregunta.descripcionPregunta", placeholder="Ingrese el enunciado de la pregunta")
+                                    .row
+                                        br
+                                        .col-sm-12
+                                            .input-group
+                                                .input-group-addon
+                                                    | Ayuda
+                                                input#textinput.form-control.input-sm(ng-model="pregunta.ayudaPregunta", placeholder="Inserte una ayuda de ser necesario")
+                                    .row
+                                        br
+                                        .col-sm-3
+                                            .input-group
+                                                input#inputSexo.input-sm(type='checkbox', ng-model="pregunta.obligatoriedadPregunta")
+                                                | &nbsp ¿Obligatoria?
+                                        .col-sm-5.col-sm-offset-4
+                                            .input-group
+                                                .input-group-addon
+                                                    | Código
+                                                input.form-control.input-sm(type="text", placeholder="Código de pregunta", ng-model="pregunta.codigoPregunta",required='')
+                                .panel-body
+                                    .modal-body
+                                        form#formPregunta.form-horizontal(data-toggle='validator', role='form')
+                                            ul(ng-repeat="dato in arrayRespuesta1")
+                                                //Pregunta de Selección simple
+                                                .form-group(ng-if="respuesta.tipoRespuesta.type == 'radio'")
+                                                    .row
+                                                        .col-sm-1
+                                                            h5#enlaceGris(editable-text="dato.numEscala", placeholder="Tabular", on-change="validate(value)")
+                                                        .col-sm-1
+                                                            input(type="radio", name="{{pregunta.codigoPregunta}}", ng-value="dato.numEscala", ng-model="respuesta.correcta")
+                                                        .col-sm-4
+                                                            input#textinput.form-control.input-md(ng-model="dato.title", required='')
+                                                        .col-sm-4
+                                                            input#textinput.form-control.input-md(ng-model="dato.cuales", required='', ng-if="dato.otros == true")
+                                                        .col-sm-1
+                                                            a.pull-right.btn.btn-clipboard.btn-xs(title="addRespuesta", ng-click="addOpcionRespuesta(respuesta)", ng-if="respuesta.tipoRespuesta.value == 2")
+                                                                span.glyphicon.glyphicon-plus
+                                                        .col-sm-1
+                                                            a.pull-right.btn.btn-clipboard.btn-xs(title="eliminarRespuesta", ng-click="eliminarRespuesta(dato)", ng-if="respuesta.tipoRespuesta.value == 2")
+                                                                span.glyphicon.glyphicon-trash
+                                                        .col-sm-1
+                                                            a.pull-right.btn.btn-clipboard.btn-xs(title="addExtra", ng-click="agregarOtros(dato)", ng-if="respuesta.tipoRespuesta.value == 2")
+                                                                span.glyphicon.glyphicon-pencil
+                                                //Pregunta de selección múltiple
+                                                .form-group(ng-if="respuesta.tipoRespuesta.type == 'checkbox'")
+                                                    .row
+                                                        .col-sm-1
+                                                            h5(editable-text="dato.numEscala", placeholder="Tabular", on-change="validate(value)")
+                                                        .col-sm-1
+                                                            input(type="checkbox", ng-model="dato.valor")
+                                                        .col-sm-4
+                                                            input#textinput.form-control.input-md(ng-model="dato.title", required='')
+                                                        .col-sm-4
+                                                            input#textinput.form-control.input-md(ng-model="dato.cuales", required='', ng-if="dato.otros == true")
+                                                        .col-sm-1
+                                                            a.pull-right.btn.btn-clipboard.btn-xs(title="addRespuesta", ng-click="addOpcionRespuesta(respuesta)", ng-if="respuesta.tipoRespuesta.value == 1")
+                                                                span.glyphicon.glyphicon-plus
+                                                        .col-sm-1
+                                                            a.pull-right.btn.btn-clipboard.btn-xs(title="eliminarRespuesta", ng-click="eliminarRespuesta(dato)", ng-if="respuesta.tipoRespuesta.value == 1")
+                                                                span.glyphicon.glyphicon-trash
+                                                        .col-sm-1
+                                                            a.pull-right.btn.btn-clipboard.btn-xs(title="addExtra", ng-click="agregarOtros(dato)", ng-if="respuesta.tipoRespuesta.value == 1")
+                                                                span.glyphicon.glyphicon-pencil
+                                                //Pregunta tipo rango
+                                                .form-group(ng-if="respuesta.tipoRespuesta.type == 'range'")
+                                                    .row
+                                                        .col-sm-3
+                                                            .input-group
+                                                                .input-group-addon
+                                                                    | Mínimo
+                                                                input.form-control(type="number", name="numMinimo", ng-model="rango.minimo", min="0", max="99", step="1", placeholder="",
+                                                                maxlength="2", required='')
+                                                        .col-sm-3.col-sm-offset-1
+                                                            .thumbnail
+                                                                h6.text-center.modal-title
+                                                                    strong Valor seleccionado:
+                                                                        | {{dato.valor}}
+                                                        .col-sm-3.col-sm-offset-1
+                                                            .input-group
+                                                                .input-group-addon
+                                                                    | Máximo
+                                                                input.form-control(type="number", name="numMaximo", ng-model="rango.maximo", min="0", max="99", step="1", placeholder="",
+                                                                maxlength="2", required='')
+                                                    .row
+                                                        .col-sm-11
+                                                            input.input-lg(type="range", min="{{rango.minimo}}", max="{{rango.maximo}}", ng-model="dato.valor", step="1")
+                                                    .row
+                                                        .col-sm-4
+                                                            input#textinput.form-control.input-md(ng-model="dato.title", placeholder='Descripción inicial', required='')
+                                                        .col-sm-4.col-sm-offset-3
+                                                            input#textinput.form-control.input-md(ng-model="dato.title2", placeholder='Descripción final', required='')
+                                                //Pregunta tipo fecha
+                                                .form-group(ng-if="respuesta.tipoRespuesta.type == 'date'")
+                                                    .row
+                                                        .col-sm-3
+                                                            .input-group
+                                                                .input-group-addon
+                                                                    i.glyphicon.glyphicon-calendar
+                                                                input.form-control(type="date", disabled)
+                                                //Pregunta tipo hora
+                                                .form-group(ng-if="respuesta.tipoRespuesta.type == 'time'")
+                                                    .row
+                                                        .col-sm-3
+                                                            .input-group
+                                                                .input-group-addon
+                                                                    i.glyphicon.glyphicon-hourglass
+                                                                input.form-control(type="time", disabled)
+                                                //Pregunta tipo texto
+                                                .form-group(ng-if="respuesta.tipoRespuesta.type == 'text'")
+                                                    .row
+                                                        .col-sm-11
+                                                            .input-group
+                                                                .input-group-addon
+                                                                    i.glyphicon.glyphicon-tag
+                                                                input.form-control(type="text", disabled)
+                                                //Pregunta tipo canasta
+                                                .form-group(ng-if="respuesta.tipoRespuesta.type == 'canasta'")
+                                                    .form-group
+                                                        h4.modal-title.text-left Frecuencia
+
+                                                        ul.list-inline(ng-model="listadoFrecuencia")
+                                                            li.pull-left(type="none", ng-repeat="frecuencia in listadoFrecuencia")
+                                                                input(type="checkbox", ng-model="frecuencia.respuesta", name="frecuencia", value="frecuencia.str_descripcion")
+                                                                |&nbsp;&nbsp;{{frecuencia.str_descripcion}}
+                                                    .form-group
+                                                        h4.modal-title.text-center Productos
+
+                                                        script(type='text/ng-template', id='nodes_render.html')
+                                                            .tree-node.tree-node-content.bs-callout.text-left
+                                                                a.btn.btn-clipboard.btn-xs(ng-if="node.nodes && node.nodes.length > 0", data-nodrag="", ng-click="toggle(this)")
+                                                                    span.glyphicon(ng-class="{'glyphicon glyphicon-triangle-right': collapsed, 'glyphicon glyphicon-triangle-bottom': !collapsed}")
+                                                                span(ng-if="node.nodes && node.nodes.length == 0", data-nodrag="", ng-click="toggle(this)") &nbsp
+                                                                input(type="checkbox", value="{{node.int_id}}", ng-model="node.respuesta", ng-change="seleccionCheckBox(this)")
+                                                                | &nbsp; {{node.str_descripcion}}
+                                                            ol(ui-tree-nodes="", ng-model="node.nodes", ng-class="{hidden: collapsed}")
+                                                                li(ng-repeat="node in node.nodes", ui-tree-node="", ng-include="'nodes_render.html'")
+                                                        #tree-root(ui-tree="", data-drag-enabled="false")
+                                                            ol(ui-tree-nodes="", ng-model="arbolProducto")
+                                                                li(ng-repeat="node in arbolProducto", ui-tree-node="", ng-include="'nodes_render.html'")
+
+
+
+                                .panel-footer
+                                    button.btn.btn-primary.pull-center(type="button", data-toggle="", data-target="", ng-click="addPregunta(pregunta)") Agregar
+                        button.btn.btn-primary.pull-center(type="button", data-toggle="", data-target="", ng-click="guardar()") Guardar todo
+        //Panel editar Pregunta
+        #editarPreguntaModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(type="button", data-dismiss="modal")
+                            span(aria-hidden="true") &#215;
+                            span.sr-only Close
+                        h4#myModalLabel.modal-title Eliminar Grupo.
+                    .modal-body
+                        script(type='text/ng-template', id='nodes_rendererEditar.html')
+                            div(ng-class="{'panel panel-default': node.nodes && node.nodes.length > 0}")
+                                .panel-heading(ng-if="node.nodes && node.nodes.length > 0", ui-tree-handle="")
+                                    i.glyphicon.glyphicon-question-sign(ng-if="node.nodes && node.nodes.length > 0")
+                                    input(type="text", ng-value="node.title", ng-model="node.title") {{node.title}}
+                                div(ng-if="node.nodes && node.nodes.length == 0")
+                                    input(type="{{node.type}}", name="{{node.codigo}}", value="{{node.codigo}}", ng-if="node.type == 'checkbox' || node.type == 'radio'")
+                                    input.form-control.input-sm(type="{{node.type}}", name="{{node.codigo}}", ng-if="node.type == 'text'")
+                                    input.input-lg(type="{{node.type}}", min="{{rango.minimo}}", max="{{rango.maximo}}", ng-model="dato.valor", step="1", ng-if="node.type == 'range'")
+                                    input.form-control.input-sm(type="{{node.type}}", ng-model="dato.valor", ng-if="node.type == 'date'")
+                                    input.form-control.input-sm(type="{{node.type}}", ng-if="node.type == 'time'")
+                                    input(type="text", ng-value="node.title", ng-model="node.title")
+                                    input(type="text", name="{{node.codigo}}", ng-value="node.cuales", ng-model="node.cuales", ng-if="node.otros == true")
+                                    p.pull-right {{node.title2}}
+                                ol(ui-tree-nodes="", ng-model="node.nodes", ng-class="{hidden: collapsed}")
+                                    li(ng-repeat="node in node.nodes", ng-include="'nodes_rendererEditar.html'")
+                        #tree-root(ui-tree="", data-drag-enabled="false")
+                            ol(ui-tree-nodes="", ng-model="preguntaEdicion")
+                                li(ng-repeat="node in preguntaEdicion", ui-tree-node="", ng-include="'nodes_rendererEditar.html'")
+                    .modal-footer
+                        button.btn.btn-default(type="button", data-dismiss="modal") Cancelar
+                        button.btn.btn-primary(type="button", data-dismiss="modal", ng-click="asignarEdicion()") Actualizar
+
+h3 Comportamiento de los datos
+.info {{info}}
+pre.code.
+    {{ listadoVariable | json }}
