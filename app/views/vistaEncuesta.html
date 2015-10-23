@@ -1,0 +1,160 @@
+<br/>
+<div class="row">
+  <!--Formulario para verificacion de la eliminacion de un Grupo o Subgrupo-->
+  <div id="encabezadoEncuestaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&#215;</span><span class="sr-only">Close</span></button>
+          <h4 id="myModalLabel" class="modal-title">Seleccionar localidad y famila</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group has-feedback">
+            <div class="row">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">Cantón</div>
+                  <select ng-model="modeloCanton" ng-options="canton as canton.str_descripcion for canton in listadoCanton" class="form-control">
+                    <option value="">Seleccione un cantón</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <div class="row">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">Parroquia</div>
+                  <select ng-model="modeloParroquia" ng-options="parroquia as parroquia.str_descripcion for parroquia in listadoParroquia" class="form-control">
+                    <option value="">Seleccione una parroquia</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <div class="row">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">Comunidad</div>
+                  <select ng-model="modeloComunidad" ng-options="comunidad as comunidad.str_descripcion for comunidad in listadoComunidad" class="form-control">
+                    <option value="">Seleccione una comunidad</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <div class="row">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">Código Familia</div>
+                  <input ng-model="numeroFamilia.numero" type="number" name="numeroFamilia" placeholder="Ingrese el código" ng-required="true" class="form-control"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group has-feedback">
+            <div class="row">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="input-group">
+                  <div class="input-group-addon">Descripción Familia</div>
+                  <input ng-model="numeroFamilia.str_descripcion" type="text" name="descripcionFamilia" placeholder="Ingrese una descripción de la familia" ng-required="true" class="form-control"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" onClick="location.reload();" class="btn btn-default">Cancelar</button>
+          <button type="button" data-dismiss="modal" ng-click="asignarRecursosEncuesta()" class="btn btn-primary">Asignar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-hide="visible" class="cl-lg-3"></div>
+  <div ng-show="visible" class="cl-lg-6">
+    <div ng-grid="gridOptions" class="gridStyles check-element animate-show"></div>
+  </div>
+  <div ng-hide="visible" class="cl-lg-3">
+    <div contenteditable="contenteditable" ng-show="visibleEncuesta" class="papel_rayado">
+      <center>
+        <h3>{{preguntas[0].str_titulo}}</h3>
+        <label>{{preguntas[0].str_objetivo}}</label>
+        <p>{{preguntas[0].str_destinado_a}}</p>
+        <p>{{preguntas[0].str_descripcion}}</p>
+        <p>{{preguntas[0].str_instrucciones}}</p>
+        <label>{{preguntas[1].fecha | date: "yyyy-MM-dd 'at' h:mm:ssa"}}</label>
+      </center><br/><br/>
+      <script type="text/ng-template" id="nodes_renderer.html">
+        <p>{{node.str_descripcion_variable}}</p>
+        <div ng-if="node.nodes &amp;&amp; node.int_id_padre == null"><strong>[{{$index + 1}}] &nbsp</strong><strong>{{node.str_enunciado}}</strong><i ng-if="node.nodes &amp;&amp; node.int_id_padre == null" class="glyphicon glyphicon-question-sign"></i><span ng-if="node.int_obligatoria == 1" style="color: red">*</span>
+          <!--a.pull-right.btn.btn-clipboard.btn-xs(title="Agregar respuesta", data-nodrag="", ng-click="newSubItem(this)", style="margin-right: 8px;")-->
+          <!--    span.glyphicon.glyphicon-plus-->
+        </div>
+        <div ng-if="node.nodes.length == 0">
+          <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" ng-value="node.int_id" ng-if="node.int_id_tipo_pregunta == 'radio'" ng-model="node.respuesta" ng-change="trueFalse(node)"/>
+          <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.int_id_tipo_pregunta == 'checkbox'" ng-model="node.respuesta"/>
+          <textarea rows="2" cols="65" ng-model="node.respuesta" ng-if="node.int_id_tipo_pregunta == 'text'"></textarea>
+          <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'time'" ng-model="node.respuesta"/>
+          <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'date'" ng-model="node.respuesta"/>
+          <input type="{{node.int_id_tipo_pregunta}}" min="{{node.int_inicio}}" max="{{node.int_fin}}" step="1" ng-if="node.int_id_tipo_pregunta == 'range'" ng-model="node.respuesta" class="input-lg"/>
+          <!--a.pull-right.btn.btn-clipboard.btn-xs(title="Editar", data-toggle='modal', data-target='#editarProductoModal', data-nodrag="",-->
+          <!--ng-click="tester(node)", style="margin-right: 8px;")-->
+          <!--    span.glyphicon.glyphicon-pencil(aria-hidden='true')--> {{node.str_descripcion}} {{node.str_desc_campo}}
+          <input type="text" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.str_desc_campo" ng-model="node.respuestaOtros"/>
+          <p class="pull-left">{{node.str_desc_inicio}} {{node.int_inicio}}</p>
+          <p class="pull-right">{{node.str_desc_fin}} {{node.int_fin}}</p><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+          <p ng-if="node.int_id_tipo_pregunta == 'range'"><strong>Su respuesta: {{node.respuesta}}</strong></p><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+        </div>
+        <div ng-if="node.nodes &amp;&amp; node.nodes[0].nodes.length &gt; 0">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <td><strong>N°</strong></td>
+                <td><strong>PRODUCTO</strong></td>
+                <td><strong>COSTO</strong></td>
+                <td><strong>PESO</strong></td>
+                <td><strong>FRECUENCIA</strong></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="producto in node.nodes">
+                <td>{{$index + 1}}</td>
+                <td>{{producto.str_descripcion}}</td>
+                <td>
+                  <input type="number" ng-model="producto.flt_costo" ng-value="producto.flt_costo" class="form-control"/>
+                </td>
+                <td>
+                  <input type="number" ng-model="producto.flt_peso" ng-value="producto.flt_peso" class="form-control"/>
+                </td>
+                <td>
+                  <ul class="text-inline">
+                    <li ng-repeat="frecuencia in producto.nodes">
+                      <input type="radio" name="{{node.codigo + producto.int_id}}" ng-model="frecuencia.respuesta" ng-value="frecuencia.int_id" ng-change="trueFalseFrecuencia(producto.nodes, frecuencia)"/>{{frecuencia.str_descripcion}}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+          <li ng-repeat="node in node.nodes | orderBy:'int_id'" ng-include="'nodes_renderer.html'">",</li>
+        </ol>
+      </script>
+      <div id="tree-root" ui-tree="" data-drag-enabled="false">
+        <ol ui-tree-nodes="" ng-model="preguntas[2]">
+          <li ng-repeat="node in preguntas[2]" ui-tree-node="" ng-include="'nodes_renderer.html'"></li>
+        </ol>
+      </div>
+      <!--FINALIZA PARTE DE LA VISUALIZACION DE LA ENCUESTA YA FORMADA-->
+    </div>
+    <center><a ng-click="" class="btn btn-success">Guardar</a><a ng-click="ingresarRespuesta()" class="btn btn-success pull-left">Cancelar</a></center>
+    <h3>Comportamiento de los datos</h3>
+    <div class="info">{{info}}</div>
+    <pre class="code">{{ preguntas | json }}</pre>
+  </div>
+  <!-- FINALIZA VISUALIZACION DE VARIABLES-->
+</div>

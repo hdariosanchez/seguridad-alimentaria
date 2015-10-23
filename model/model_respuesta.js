@@ -22,11 +22,10 @@ exports.connect = function() {
 exports.db_insertar = function(respuestaNueva, id_pregunta, cb) {
     var correcto = 0,
         insertado = true;
-    respuestaNueva.valor? correcto = 1 : correcto = 0;
-    console.log('Info: Llegó al model_respuesta/db_insertar con estos datos'+ respuestaNueva.type+', '+ respuestaNueva.valor +' y '+id_pregunta);
+    respuestaNueva.valor ? correcto = 1 : correcto = 0;
     if(respuestaNueva.type === 'checkbox' || respuestaNueva.type === 'radio'){
         client.query("INSERT INTO test (int_id, int_id_pregunta, str_descripcion, int_valor, int_correcto, str_desc_campo) VALUES (?, ?, ?, ?, ?, ?);",
-            [respuestaNueva.numId, id_pregunta, respuestaNueva.title, respuestaNueva.numEscala, correcto, respuestaNueva.cuales || ''])
+            [respuestaNueva.numId, id_pregunta, respuestaNueva.str_descripcion, respuestaNueva.numEscala, correcto, respuestaNueva.cuales || ''])
             .on('error', function(err) {
                 console.log('Error: SQL error en model_respuesta / db_insertar (test): ' + inspect(err));
                 insertado = false;
@@ -37,7 +36,7 @@ exports.db_insertar = function(respuestaNueva, id_pregunta, cb) {
     }else{
         if(respuestaNueva.type === 'range'){
             client.query("INSERT INTO escala (int_id_pregunta, str_desc_inicio, str_desc_fin, int_inicio, int_fin) VALUES (?, ?, ?, ?, ?);",
-                [id_pregunta, respuestaNueva.title, respuestaNueva.title2, respuestaNueva.numId , respuestaNueva.numEscala])
+                [id_pregunta, respuestaNueva.str_descripcion, respuestaNueva.str_desc_fin, respuestaNueva.numId , respuestaNueva.numEscala])
                 .on('error', function(err) {
                     console.log('Error: SQL error en model_respuesta / db_insertar (escala): ' + inspect(err));
                     insertado = false;

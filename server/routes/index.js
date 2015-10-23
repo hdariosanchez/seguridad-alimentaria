@@ -46,7 +46,9 @@ router.post('/user/admin/variable/guardar', model_variable.insertarVariable);
 router.get('/user/admin/variablePuro', model_variable.getlistado);
 router.post('/user/admin/variable/eliminar', model_variable.eliminar);
 
-router.post('/user/admin/pregunta/guardar', model_pregunta.insertarPregunta);
+
+router.post('/user/admin/pregunta/guardar', model_pregunta.insertarPreguntas); //Ingreso de preguntas de la encuesta en gestion de preguntas!
+//router.post('/user/admin/pregunta/guardar', model_pregunta.insertarPregunta); //Ingreso de pregunta idividual de la encuesta en gestion de preguntas!
 
 router.get('/user/canton', model_canton.getlistado);
 

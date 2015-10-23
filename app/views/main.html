@@ -1,0 +1,77 @@
+
+<div class="hero-unit">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div id="myCarousel" data-interval="3000" data-ride="carousel" class="carousel slider">
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+          </ol>
+          <div role="listbox" class="carousel-inner">
+            <div class="item active"><img ng-src="{{slider[0].image}}" class="img-responsive first-slide"/>
+              <div class="carousel-caption">
+                <p>{{slider[0].title}}</p>
+                <!--a(ng-click='logout()') LOGOUT-->
+              </div>
+            </div>
+            <div class="item"><img ng-src="{{slider[1].image}}" class="img-responsive second-slide"/>
+              <div class="carousel-caption">
+                <p>{{slider[1].title}}</p>
+                <!--a(ng-click='logout()') LOGOUT-->
+              </div>
+            </div>
+            <div class="item"><img ng-src="{{slider[2].image}}" class="img-responsive third-slide"/>
+              <div class="carousel-caption">
+                <p>{{slider[2].title}}</p>
+                <!--a(ng-click='logout()') LOGOUT-->
+              </div>
+            </div>
+          </div><a href="#myCarousel" role="button" data-slide="prev" class="left carousel-control"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Previous</span></a><a href="#myCarousel" role="button" data-slide="next" class="right carousel-control"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Next</span></a>
+        </div>
+      </div>
+    </div><br/><br/>
+    <!--a.btn.btn-default(role="button", ng-click='logout()') SALIR-->
+    <!--.container-->
+    <div style="padding: 15px;" class="row">
+      <div class="col-md-4">
+        <div class="thumbnail"><img src="http://lorempixel.com/280/280/nature/" alt="placeholder" width="140" height="140" class="img-circle img-responsive"/>
+          <div class="caption">
+            <h3 style="text-align:center">La naturaleza</h3>
+            <p style="text-align:center">La naturaleza, en su sentido más amplio, es equivalente al mundo natural,</p>mundo material o universo material. El término hace referencia a los fenómeno
+            del mundo físico, y también a la vida en general. Por lo general no incluye
+            los objetos artificiales ni la intervención humana, a menos que se la califique
+            de manera que haga referencia a ello, por ejemplo con expresiones como “naturaleza
+            humana” o “la totalidad de la naturaleza”. La naturaleza también se encuentra diferenciada de lo sobrenatural.<br/><br/>
+            <p style="text-align:center"><a href="#" role="button" class="btn btn-default">Ver detalles »</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail"><img src="http://lorempixel.com/280/280/sports/" alt="placeholder" width="140" height="140" class="img-circle img-responsive"/>
+          <div class="caption">
+            <h3 style="text-align:center">El deporte</h3>
+            <p style="text-align:center">El deporte es una actividad reglamentada, normalmente de carácter competitivo, que en algunos</p>casos mejora la condición física y psíquica de quien lo practica y tiene propiedades que lo diferencian del simple juego.
+             La RAE, en su Diccionario de la lengua española, define deporte como una «actividad física, ejercida como juego
+            o competición, cuya práctica supone entrenamiento y sujeción a normas»; también, en una segunda acepción,
+            más amplia, como «recreación, pasatiempo, placer, diversión o ejercicio físico, por lo común al aire libre».<br/><br/>
+            <p style="text-align:center"><a href="#" role="button" class="btn btn-default">Ver detalles »</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail"><img src="http://lorempixel.com/280/280/food/" alt="placeholder" width="140" height="140" class="img-circle img-responsive"/>
+          <div class="caption">
+            <h3 style="text-align:center">La comida</h3>
+            <p style="text-align:center">La comida es el conjunto de sustancias alimenticias que se consumen en diferentes momentos del día o noche.</p>Una vez ingeridas por un organismo vivo, proveen de elementos para su nutrición y permiten su conservación.
+            No obstante, el consumo de las sustancias que componen una comida también se realiza con fines fruitivos o
+            gratificantes. Los seres humanos realizan varias comidas al día, y el número y contenido de cada una de éstas
+            depende de un conjunto de factores tales como los ambientales y los sociales.<br/><br/>
+            <p style="text-align:center"><a href="#" role="button" class="btn btn-default">Ver detalles »</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

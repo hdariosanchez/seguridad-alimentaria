@@ -67,39 +67,39 @@ exports.db_get_ultimo_id = function(cb) {
 
 
 exports.db_insertar = function(preguntaNueva, cb) {
-    var tipoPregunta = null;
-    var obligatoriedad = null;
+    var int_id_tipo_pregunta = null;
+    var int_obligatoria = null;
     var insertado = true;
 
     if(preguntaNueva.type === 'checkbox'){
-        tipoPregunta = 4;
+        int_id_tipo_pregunta = 4;
     }
     if(preguntaNueva.type === 'radio'){
-        tipoPregunta = 3;
+        int_id_tipo_pregunta = 3;
     }
     if(preguntaNueva.type === 'text'){
-        tipoPregunta = 1;
+        int_id_tipo_pregunta = 1;
     }
     if(preguntaNueva.type === 'range'){
-        tipoPregunta = 5;
+        int_id_tipo_pregunta = 5;
     }
     if(preguntaNueva.type === 'date'){
-        tipoPregunta = 6;
+        int_id_tipo_pregunta = 6;
     }
     if(preguntaNueva.type === 'time'){
-        tipoPregunta = 7;
+        int_id_tipo_pregunta = 7;
     }
     if(preguntaNueva.type === 'canasta'){
-        tipoPregunta = 10;
+        int_id_tipo_pregunta = 10;
     }
-    if(preguntaNueva.obligatoriedad){
-        obligatoriedad = 1;
+    if(preguntaNueva.int_obligatoria){
+        int_obligatoria = 1;
     }
-    if(!preguntaNueva.obligatoriedad){
-        obligatoriedad = 0;
+    if(!preguntaNueva.int_obligatoria){
+        int_obligatoria = 0;
     }
     client.query("INSERT INTO pregunta (int_id_encuesta, int_id_variable, int_id_tipo_pregunta, int_numero, str_enunciado, str_ayuda, int_obligatoria) VALUES (?, ?, ?, ?, ?, ?, ?);",
-        [preguntaNueva.id_encuesta, preguntaNueva.section, tipoPregunta, preguntaNueva.numId, preguntaNueva.title || 'Sin definir', preguntaNueva.ayuda || 'Sin definir', obligatoriedad])
+        [preguntaNueva.int_id_encuesta, preguntaNueva.int_id_variable, int_id_tipo_pregunta, preguntaNueva.numId, preguntaNueva.str_enunciado || 'Sin definir', preguntaNueva.str_ayuda || 'Sin definir', int_obligatoria])
         .on('error', function(err) {
             insertado = false;
             console.log('Error: SQL error model_pregunta / db_insertar : ' + inspect(err));

@@ -1,0 +1,46 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 col-md-4 col-md-offset-4">
+      <div class="modal-header">
+        <h1 class="modal-title text-center">Login</h1>
+      </div>
+      <div class="modal-body">
+        <div class="account-wall">
+          <form id="LoginForm" name="loginForm" class="form-signin">
+            <!--Input de nick de usuario-->
+            <div ng-class="{'has-error':loginForm.username.$invalid &amp;&amp; loginForm.username.$touched}" class="form-group">
+              <div class="row">
+                <label for="inputNick" class="control-label">Usuario</label>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+                  <input id="inputNick" type="text" name="username" ng-model="user.username" placeholder="Nombre de usuario o nick" maxlength="20" autofocus="" ng-required="true" class="form-control"/><span ng-if="loginForm.username.$invalid &amp;&amp; loginForm.username.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="loginForm.username.$error.required &amp;&amp; loginForm.username.$touched" class="help-block">Nombre de usuario requerido</span>
+              </div>
+            </div>
+            <!--Input de contraseña de usuario-->
+            <div ng-class="{'has-error':loginForm.contrasena.$invalid &amp;&amp; loginForm.contrasena.$touched}" class="form-group">
+              <div class="row">
+                <label for="inputContrasena" class="control-label">Contraseña</label>
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
+                  <input id="inputContrasena" type="password" name="contrasena" ng-model="user.password" data-minlength="6" maxlength="30" placeholder="Contraseña" required="" class="form-control"/><span ng-if="loginForm.contrasena.$invalid &amp;&amp; loginForm.contrasena.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="loginForm.contrasena.$error.required &amp;&amp; loginForm.contrasena.$touched" class="help-block">Contraseña requerida</span><span ng-if="loginForm.contrasena.$dirty &amp;&amp; loginForm.contrasena.$error.minlength" class="help-block">Mínimo 6 caracteres</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <!--Botones de acceder y cancelación-->
+        <div class="form-group"><a href="#/" class="btn btn-default">Cancelar</a>
+          <button type="submit" data-dismiss="modal" ng-click="login()" ng-disabled="loginForm.$invalid" class="btn btn-primary">Acceder</button>
+        </div>
+        <div class="form-group">
+          <!--Enlace para redirigir a la ayuda--><a href="#" class="pull-right need-help">¿Necesita ayuda?<span class="clearfix"></span></a>
+          <!--Enlace para ir a la página de registro--><a href="#/registro" class="pull-left new-account">Crear una cuenta</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

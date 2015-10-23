@@ -1,0 +1,24 @@
+
+<div class="container-fluid">
+  <div class="modal-header">
+    <h4 id="myModalLabel">Gestión de preguntas</h4>
+    <p id="myModalLabel">Seleccione la encuesta que desea gestionar.</p>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-4">
+        <div ng-grid="gridOptions" class="gridStyles"></div>
+      </div>
+      <div class="col-sm-8"><a type="button" href="#/pregunta" ng-disabled="habilitar" class="btn btn-primary pull-right">Gestionar preguntas</a>
+        <h4><strong>Título:</strong> {{seleccion[0].str_titulo}}</h4>
+        <p><strong>Objetivo:</strong> {{seleccion[0].str_objetivo}}</p>
+        <p><strong>Descripción:</strong> {{seleccion[0].str_descripcion}}</p>
+        <p><strong>Destinado a:</strong> {{seleccion[0].str_destinado_a}}</p>
+        <p><strong>Instrucciones:</strong> {{seleccion[0].str_instrucciones}}</p>
+        <p><strong>Fecha de creación:</strong> {{seleccion[0].dt_fecha_creacion}}</p>
+        <p><strong>Estado:</strong> {{seleccion[0].str_estado}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer"></div>
+</div>

@@ -1,0 +1,133 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-10 col-md-8 col-md-offset-2">
+      <div class="modal-header">
+        <h1 class="modal-title">Registro de usuario</h1>
+        <p class="modal-title">Todos los campos son requeridos.</p>
+      </div>
+      <div class="modal-body">
+        <form id="formRegistro" name="formRegistro" class="form-horizontal">
+          <!--Input de nick de usuario-->
+          <div ng-class="{'has-error':formRegistro.nick.$invalid &amp;&amp; formRegistro.nick.$touched}" class="form-group">
+            <div class="row">
+              <label for="inputNick" class="col-sm-4 control-label">Nick</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+                  <input id="inputNick" type="text" ng-model="usuario.str_nick" placeholder="Ingrese un nombre de usuario o nick" name="nick" maxlength="20" autofocus="" ng-required="true" class="form-control"/><span ng-if="formRegistro.nick.$invalid &amp;&amp; formRegistro.nick.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.nick.$error.required &amp;&amp; formRegistro.nick.$touched" class="help-block">Campo requerido</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de contraseña de usuario-->
+          <div ng-class="{'has-error':formRegistro.contrasena.$invalid &amp;&amp; formRegistro.contrasena.$touched, 'has-warning':formRegistro.contrasena.$dirty &amp;&amp; formRegistro.contrasena.$error.minlength}" class="form-group">
+            <div class="row">
+              <label for="inputContrasena" class="col-sm-4 control-label">Contraseña</label>
+              <div class="col-sm-5">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
+                  <input id="inputContrasena" type="password" ng-model="usuario.str_contrasena" data-minlength="6" maxlength="30" name="contrasena" placeholder="Contraseña" ng-required="true" class="form-control"/><span ng-if="formRegistro.contrasena.$invalid &amp;&amp; formRegistro.contrasena.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.contrasena.$error.required &amp;&amp; formRegistro.contrasena.$touched" class="help-block">Campo requerido</span><span ng-if="formRegistro.contrasena.$dirty &amp;&amp; formRegistro.contrasena.$error.minlength" class="help-block">Mínimo 6 caracteres</span><span ng-if="formRegistro.contrasena.$dirty &amp;&amp; formRegistro.contrasena.$error.maxlength" class="help-block">Máximo 30 caracteres</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de confirmar contraseña de usuario-->
+          <div ng-class="{'has-error':formRegistro.confirmar.$invalid &amp;&amp; formRegistro.confirmar.$touched &amp;&amp; incorrectaContrasena(), 'has-success':formRegistro.confirmar.$valid &amp;&amp; formRegistro.confirmar.$dirty &amp;&amp; correctaContrasena(), 'has-warning':formRegistro.confirmar.$dirty &amp;&amp; incorrectaContrasena()}" class="form-group">
+            <div class="row">
+              <label for="inputContrasenaConfirm" class="col-sm-4 control-label">Confirmar contraseña</label>
+              <div class="col-sm-5">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-duplicate"></i></div>
+                  <input id="inputContrasenaConfirm" type="password" maxlength="30" ng-model="usuario.str_confirmar" name="confirmar" placeholder="Confirme su contraseña" ng-required="true" class="form-control"/><span ng-if="formRegistro.confirmar.$invalid &amp;&amp; formRegistro.confirmar.$touched &amp;&amp; incorrectaContrasena()" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.confirmar.$error.required &amp;&amp; formRegistro.confirmar.$touched" class="help-block">Campo requerido</span><span ng-if="formRegistro.confirmar.$dirty &amp;&amp; formRegistro.confirmar.$error.minlength" class="help-block">Mínimo 6 caracteres</span><span ng-if="formRegistro.confirmar.$dirty &amp;&amp; formRegistro.confirmar.$error.maxlength" class="help-block">Máximo 30 caracteres</span><span ng-if="formRegistro.confirmar.$dirty &amp;&amp; incorrectaContrasena()" class="help-block">No coincide la contraseña</span><span ng-if="formRegistro.confirmar.$dirty &amp;&amp; correctaContrasena()" class="help-block">La contraseña coincide</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de Nombre-->
+          <div ng-class="{'has-error':formRegistro.nombre.$invalid &amp;&amp; formRegistro.nombre.$touched}" class="form-group">
+            <div class="row">
+              <label for="inputNombre" class="col-sm-4 control-label">Nombre</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                  <input id="inputNombre" type="text" ng-model="usuario.str_nombre" placeholder="Ingrese su nombre" name="nombre" maxlength="60" ng-required="true" class="form-control"/><span ng-if="formRegistro.nombre.$invalid &amp;&amp; formRegistro.nombre.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.nombre.$error.required &amp;&amp; formRegistro.nombre.$touched" class="help-block">Campo requerido</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de Apellido-->
+          <div ng-class="{'has-error':formRegistro.apellido.$invalid &amp;&amp; formRegistro.apellido.$touched}" class="form-group">
+            <div class="row">
+              <label for="inputApellido" class="col-sm-4 control-label">Apellido</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                  <input id="inputApellido" type="text" ng-model="usuario.str_apellido" placeholder="Ingrese su apellido" name="apellido" maxlength="60" ng-required="true" class="form-control"/><span ng-if="formRegistro.apellido.$invalid &amp;&amp; formRegistro.apellido.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.apellido.$error.required &amp;&amp; formRegistro.apellido.$touched" class="help-block">Campo requerido</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de correo electrónico-->
+          <div ng-class="{'has-error':formRegistro.correo.$invalid &amp;&amp; formRegistro.correo.$touched}" class="form-group">
+            <div class="row">
+              <label for="inputCorreo" class="col-sm-4 control-label">Correo electrónico</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+                  <input id="inputCorreo" type="email" ng-model="usuario.str_email" placeholder="correo@ejemplo.com" name="correo" maxlength="150" pattern="^[a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$" ng-required="true" class="form-control text-lowercase"/><span ng-if="formRegistro.correo.$invalid &amp;&amp; formRegistro.correo.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.correo.$error.required &amp;&amp; formRegistro.correo.$touched" class="help-block">Campo requerido</span><span ng-if="formRegistro.correo.$error.pattern &amp;&amp; formRegistro.correo.$dirty" class="help-block">Dirección de correo inválida. ej. correo@ejemplo.com</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de teléfono-->
+          <div ng-class="{'has-error':formRegistro.telefono.$invalid &amp;&amp; formRegistro.telefono.$touched}" class="form-group">
+            <div class="row">
+              <label for="inputApellido" class="col-sm-4 control-label">Teléfono</label>
+              <div class="col-sm-8">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></div>
+                  <input id="inputApellido" type="text" ng-model="usuario.str_telefono" placeholder="Ingrese su número telefónico" name="telefono" maxlength="15" pattern="[-+]?[0-9]*" ng-required="true" class="form-control"/><span ng-if="formRegistro.telefono.$invalid &amp;&amp; formRegistro.telefono.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.telefono.$error.required &amp;&amp; formRegistro.telefono.$touched" class="help-block">Campo requerido</span><span ng-if="formRegistro.telefono.$error.pattern &amp;&amp; formRegistro.telefono.$dirty" class="help-block">Solo se acepta números. ej. 0987654321</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de fecha de nacimiento-->
+          <div ng-class="{'has-error':formRegistro.nacimiento.$invalid &amp;&amp; formRegistro.nacimiento.$touched}" class="form-group">
+            <div class="row">
+              <label for="inputNacimiento" class="col-sm-4 control-label">Fecha de nacimiento</label>
+              <div class="col-sm-5">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                  <input id="inputNacimiento" type="date" ng-model="usuario.d_fecha_nacimiento" ng-required="true" name="nacimiento" class="form-control"/><span ng-if="formRegistro.nacimiento.$invalid &amp;&amp; formRegistro.nacimiento.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div><span ng-if="formRegistro.nacimiento.$error.required &amp;&amp; formRegistro.nacimiento.$touched" class="help-block">Campo requerido</span>
+              </div>
+            </div>
+          </div>
+          <!--Input de sexo del usuario-->
+          <div ng-class="{'has-warning':formRegistro.sexo.$invalid}" class="form-group">
+            <div class="row">
+              <label for="inputSexo" class="col-sm-4 control-label">Sexo</label>
+              <div class="col-sm-5">
+                <div class="input-group">
+                  <label class="radio-inline">
+                    <input id="inputSexo" type="radio" ng-model="usuario.str_sexo" name="sexo" value="Masculino" ng-required="true"/>Masculino
+                  </label>
+                  <label class="radio-inline">
+                    <input id="inputSexo" type="radio" ng-model="usuario.str_sexo" name="sexo" value="Femenino" ng-required="true"/>Femenino
+                  </label><span ng-if="formRegistro.sexo.$error.required" class="help-block">Seleccione una opción</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Botones de registro y cancelación-->
+          <div class="form-group">
+            <div class="modal-footer"><a href="#/login" class="btn btn-default">Cancelar</a>
+              <button type="submit" ng-click="registrar()" ng-disabled="formRegistro.$invalid || incorrectaContrasena()" class="btn btn-primary">Registrar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

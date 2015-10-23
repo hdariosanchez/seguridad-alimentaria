@@ -41,8 +41,8 @@ exports.getlistadoVariablePorEncuesta = function(req, res) {
             }
         }
         for(var j=0; j<2; j++) {
-            parents.forEach(function (parent) {
-                loopChildrens(childrens, parent, j);
+            parents.forEach(function (padreActual) {
+                loopChildrens(childrens, padreActual, j);
             });
         }
         res.json(json);
@@ -50,34 +50,30 @@ exports.getlistadoVariablePorEncuesta = function(req, res) {
 };
 var json=[];
 // Recursividad para comprobar los children
-var loopChildrens = function(rows, parent, bandera){
-    if(rows.length === 0 && bandera === 0){json.push(parent);}
-    if(rows.length > 0 && bandera === 0){
-        rows.forEach(function (row) {
-            if(row.int_id_padre == parent.int_id){
-                parent.nodes.push(row);
-                loopChildrens(rows, row,0);
+var loopChildrens = function(listadoHijos, padreActual, bandera){
+    if(listadoHijos.length === 0 && bandera === 0){json.push(padreActual);}
+    if(listadoHijos.length > 0 && bandera === 0){
+        listadoHijos.forEach(function (row) {
+            if(row.int_id_padre == padreActual.int_id){
+                padreActual.nodes.push(row);
+                loopChildrens(listadoHijos, row,0);
             }
         });
     }
-    //json.splice(0, json.length);
-    if(rows.length>0 && bandera == 1) {
-        json.push(parent);
+    if(listadoHijos.length>0 && bandera == 1) {
+        json.push(padreActual);
     }
 };
 
 // Limpia los datos...
 var limpiaDatos = function(){
     json.splice(0, json.length);
-    //console.log("Longitud de json->"+json.length);
     parents.splice(0, parents.length);
-    //console.log("Longitud de json->"+parents.length);
     childrens.splice(0, childrens.length);
-    //console.log("Longitud de json->"+childrens.length);
 };
 var datos = 0;
-//+++++++++++++++++++INSERTAR UN PRODUCTO++++++++++++++++++++++++
-exports.insertarPregunta = function(req,res){
+
+exports.insertarPreguntas = function(req,res){ //Ingreso de preguntas con recursividad.
     data_pregunta.connect();
     data_respuesta.connect();
     data_encuesta.connect();
@@ -90,6 +86,22 @@ exports.insertarPregunta = function(req,res){
             k_loop = 0;
             funcionLoopRespuesta(datos[i_loop]);
         });
+        res.end();
+    } catch (e) {
+        res.end();
+        console.log('Error en el route_en el catch en routes/route_pregunta'+e);
+    }
+};
+
+exports.insertarPregunta = function(req,res){ //Ingreso de una pregunta con recursividad.
+    data_pregunta.connect();
+    data_respuesta.connect();
+    data_encuesta.connect();
+     datos = req.body; //Esto causo error al convertirlo enJSON por el forEach 'NO LO TIENE'
+    try {
+        i_loop =0;
+        k_loop = 0;
+        funcionLoopRespuesta(datos[i_loop]);
         res.end();
     } catch (e) {
         res.end();

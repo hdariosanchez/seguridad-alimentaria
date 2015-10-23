@@ -22,7 +22,6 @@ angular.module('proyectoSaludApp')
         var preguntaEdicion = '';
         var bandera = 0;  // Bandera relacionada con el añadir nueva opcion de respuesta al pregunta test y casilla.
         $scope.encuesta = JSON.parse($window.localStorage.getItem('encuestaInactiva'));
-        //$scope.listadoPreguntaNav = datosEncuestaPregunta.out2();
 
         MyAPIServiceFactory.obtener(urlEncuestaVariable, {'int_id_encuesta':$scope.encuesta.int_id})
             .success(function (dato) {
@@ -32,44 +31,43 @@ angular.module('proyectoSaludApp')
                 alert('Error al traer los datos de las variables en la encuestaInformacion en primera instancia.!');
             });
 
-        $scope.$watch('respuesta.tipoRespuesta', function(newValue, oldValue) { //Estar escuchando el cambio en el select de tipo pregunta..
-            if(newValue.type == 'canasta'){
+        $scope.$watch('respuesta.tipoRespuesta', function(tipoPregunta) { //Estar escuchando el cambio en el select de tipo pregunta..
+            if(tipoPregunta.type == 'canasta'){
                 MyAPIServiceFactory.getGenerico(urlProductoArbol)
-                    .success(function (dato) {
-                        console.log(JSON.stringify(dato));
-                        $scope.arbolProducto = dato;
+                    .success(function (productos) {
+                        $scope.arbolProducto = productos;
                     })
                     .error(function () {
                         alert('Error al traer los datos de producto como arbol!!');
                     });
                 MyAPIServiceFactory.getGenerico(urlFrecuencia)
-                    .success(function (dato) {
-                        for(var i=dato.length-1; i>=0;i--){
-                            dato[i].respuesta = false;
+                    .success(function (frecuencias) {
+                        for(var i=frecuencias.length-1; i>=0;i--){
+                            frecuencias[i].respuesta = false;
                         }
-                        $scope.listadoFrecuencia = dato;
+                        $scope.listadoFrecuencia = frecuencias;
 
                     })
                     .error(function () {
-                        alert('Error al traer los datos de Frecuencia!!');
+                        alert('Error al traer los frecuenciass de Frecuencia!!');
                     });
             }else{
                 numEscala = 1;
                 numId = 1;
-                $scope.arrayRespuesta1.splice(0, $scope.arrayRespuesta1.length); //Elimina todos las opciones de respuestas de la pregunta vigente para la nueva pregunta en cuestion.
+                $scope.arrayListaRespuesta.splice(0, $scope.arrayListaRespuesta.length); //Elimina todos las opciones de respuestas de la pregunta vigente para la nueva pregunta en cuestion.
                 $scope.pregunta.codigoPregunta = null;
                 $scope.pregunta.ayudaPregunta = null;
                 $scope.respuesta.correcta = null;
-                $scope.arrayRespuesta1.push(
+                $scope.arrayListaRespuesta.push(
                     {
                         int_id_padre: contador,
-                        title: "",
-                        title2: "",
+                        str_descripcion: "",
+                        str_desc_fin: "",
                         type: $scope.respuesta.tipoRespuesta.type,
                         numEscala:numEscala++,
                         numId:numId++,
                         valor: false,
-                        section: $scope.variableSeleccionada,
+                        int_id_variable: $scope.variableSeleccionada,
                         nodes: []
                     })
             }
@@ -130,13 +128,13 @@ angular.module('proyectoSaludApp')
       $scope.formVisibility=true;
       $scope.variableSeleccionada = 0;
       $scope.variableSeleccion = {
-          'nombre': ''
+          'str_nombre': ''
       };
                                                               //Funcion para testear los datos que obtenemos de la vista.
-                                                                    $scope.tester = function(scope){
-                                                                      $scope.variableSeleccion.nombre = scope.str_descripcion;
+                                                                    $scope.asignarVariable = function(scope){
+                                                                      $scope.variableSeleccion.str_nombre = scope.str_descripcion;
                                                                       $scope.variableSeleccionada = scope.int_id;
-                                                                      $scope.arrayRespuesta1[0].section = scope.int_id;
+                                                                      $scope.arrayListaRespuesta[0].int_id_variable = scope.int_id;
                                                                       $scope.visiblePregunta = true;
                                                                       $scope.visibleAnuncio = true;
                                                                     };
@@ -147,16 +145,16 @@ angular.module('proyectoSaludApp')
                                                                                 var numIdPregunta = 1;
 
 //Objeto [] para insertar las opciones respuesta
-      $scope.arrayRespuesta1 = [
+      $scope.arrayListaRespuesta = [
         {
           int_id_padre: contador,
-          title: "",
-          title2: "",
+          str_descripcion: "",
+          str_desc_fin: "",
           type: $scope.respuesta.tipoRespuesta.type,
           numEscala:numEscala++,
           numId:numId++,
           valor: false,
-          section: $scope.variableSeleccionada,
+          int_id_variable: $scope.variableSeleccionada,
             otros: false,
             cuales: '',
           nodes: []
@@ -164,11 +162,11 @@ angular.module('proyectoSaludApp')
       ];
 //Objeto que me permite visualizar las opciones de respuesta renderizadas en la vista antes de ingresar por completo en el array de preguntas aviles.
       //Esto se puede simplificar para no hacerle tanta vuelta pero por el momento esta bien no hace daño tampoco.
-      //$scope.arrayRespuesta1 = arrayRespuesta;
+      //$scope.arrayListaRespuesta = arrayRespuesta;
         $scope.validate=function validateContent(value){
             var numTabular = parseInt(value);
-            for(var i=$scope.arrayRespuesta1.length - 1; i>=0; i--){
-                if(numTabular == $scope.arrayRespuesta1[i].numEscala){
+            for(var i=$scope.arrayListaRespuesta.length - 1; i>=0; i--){
+                if(numTabular == $scope.arrayListaRespuesta[i].numEscala){
                     alert('Tabular no permitido!');
                     return false;
                 }
@@ -178,16 +176,16 @@ angular.module('proyectoSaludApp')
 //-----------------------------------------------------------
 //Funcion que agrega todas las opciones posibles de respuesta en el arrayRespuesta para luego ingresarlo en el array de preguntas.
       $scope.addOpcionRespuesta = function(respuestaNueva){
-        $scope.arrayRespuesta1.push(
+        $scope.arrayListaRespuesta.push(
             {
               int_id_padre: contador,
-              title: respuestaNueva.descripcionRespuesta,
-              title2: "",
+              str_descripcion: respuestaNueva.descripcionRespuesta,
+              str_desc_fin: "",
               type: respuestaNueva.tipoRespuesta.type,
               numEscala:numEscala++,
               numId:numId++,
               valor: false,
-              section: $scope.variableSeleccionada,
+              int_id_variable: $scope.variableSeleccionada,
                 otros: false,
                 cuales: '',
               nodes: []
@@ -196,13 +194,13 @@ angular.module('proyectoSaludApp')
       };
 
         $scope.eliminarRespuesta = function(scope){
-            for(var i=0; i<$scope.arrayRespuesta1.length; i++){
+            for(var i=0; i<$scope.arrayListaRespuesta.length; i++){
                 if(bandera == 1){
-                    $scope.arrayRespuesta1[i].numId = $scope.arrayRespuesta1[i].numId - 1;
+                    $scope.arrayListaRespuesta[i].numId = $scope.arrayListaRespuesta[i].numId - 1;
                 }
 
-                if($scope.arrayRespuesta1[i].numId == scope.numId && bandera == 0) {
-                    $scope.arrayRespuesta1.splice(i,1);
+                if($scope.arrayListaRespuesta[i].numId == scope.numId && bandera == 0) {
+                    $scope.arrayListaRespuesta.splice(i,1);
                     i-=1;
                     bandera=1;
                 }
@@ -212,7 +210,7 @@ angular.module('proyectoSaludApp')
 
 
         //Funcion que agrega la pregunta con sus respuestas.
-        $scope.addPregunta = function(preguntaNueva){
+        $scope.guardarPregunta = function(preguntaNueva){
             if($scope.respuesta.tipoRespuesta.type === "canasta"){
                 productosSeleccionados = [];
                 frecuenciasSeleccionadas.splice(0, frecuenciasSeleccionadas.length);
@@ -231,15 +229,15 @@ angular.module('proyectoSaludApp')
                 });
                 $scope.listadoPregunta.push(
                     {
-                        id_encuesta: $scope.encuesta.int_id,
+                        int_id_encuesta: $scope.encuesta.int_id,
                         id_pregunta: contador,
-                        obligatoriedad: preguntaNueva.obligatoriedadPregunta,
-                        ayuda: preguntaNueva.ayudaPregunta,
-                        section: $scope.variableSeleccionada,
+                        int_obligatoria: preguntaNueva.obligatoriedadPregunta,
+                        str_ayuda: preguntaNueva.ayudaPregunta,
+                        int_id_variable: $scope.variableSeleccionada,
                         type: $scope.respuesta.tipoRespuesta.type,
                         int_id_padre: null,
                         numId: numIdPregunta++,
-                        title: preguntaNueva.descripcionPregunta,
+                        str_enunciado: preguntaNueva.descripcionPregunta,
                         codigo: preguntaNueva.codigoPregunta,
                         nodes:[],
                         productos:  productosSeleccionados
@@ -247,26 +245,24 @@ angular.module('proyectoSaludApp')
                 );
 
             } else {
-
-                var arrayRespuestaLocal = $scope.arrayRespuesta1; //array local donde se almacena las respuestas pre-insertadas --se lo puede quitar y hacerle directamente
                 $scope.listadoPregunta.push(
                     {
-                        id_encuesta: $scope.encuesta.int_id,
+                        int_id_encuesta: $scope.encuesta.int_id,
                         id_pregunta: contador,
-                        obligatoriedad: preguntaNueva.obligatoriedadPregunta,
-                        ayuda: preguntaNueva.ayudaPregunta,
-                        section: $scope.variableSeleccionada,
+                        int_obligatoria: preguntaNueva.obligatoriedadPregunta,
+                        str_ayuda: preguntaNueva.ayudaPregunta,
+                        int_id_variable: $scope.variableSeleccionada,
                         type: $scope.respuesta.tipoRespuesta.type,
                         int_id_padre: null,
                         numId: numIdPregunta++,
-                        title: preguntaNueva.descripcionPregunta,
+                        str_enunciado: preguntaNueva.descripcionPregunta,
                         codigo: preguntaNueva.codigoPregunta,
                         nodes: []
 
                     }
                 );
                 preguntaNueva.descripcionPregunta = null;
-                arrayRespuestaLocal.forEach(function (respuesta) { //forEach que ingresa opcion de pregunta por odp porque no permitia asi no mas
+                $scope.arrayListaRespuesta.forEach(function (respuesta) { //forEach que ingresa opcion de pregunta por odp porque no permitia asi no mas
                     respuesta.type = $scope.respuesta.tipoRespuesta.type;
                     if (respuesta.numEscala == $scope.respuesta.correcta) {
                         respuesta.valor = true;
@@ -283,27 +279,27 @@ angular.module('proyectoSaludApp')
                 contador++; //aunmenta en 1 el contador para preparar la siguiente pregunta.
                 numEscala = 1;
                 numId = 1;
-                $scope.arrayRespuesta1.splice(0, $scope.arrayRespuesta1.length); //Elimina todos las opciones de respuestas de la pregunta vigente para la nueva pregunta en cuestion.
+                $scope.arrayListaRespuesta.splice(0, $scope.arrayListaRespuesta.length); //Elimina todos las opciones de respuestas de la pregunta vigente para la nueva pregunta en cuestion.
                 $scope.pregunta.codigoPregunta = null;
                 $scope.pregunta.ayudaPregunta = null;
                 $scope.respuesta.correcta = null;
-                $scope.arrayRespuesta1.push(
+                $scope.arrayListaRespuesta.push(
                     {
                         int_id_padre: contador,
-                        title: "",
-                        title2: "",
+                        str_descripcion: "",
+                        str_desc_fin: "",
                         type: $scope.respuesta.tipoRespuesta.type,
                         numEscala: numEscala++,
                         numId: numId++,
                         valor: false,
-                        section: $scope.variableSeleccionada,
+                        int_id_variable: $scope.variableSeleccionada,
                         otros: false,
                         cuales: '',
                         nodes: []
                     }
                 );
                 $scope.visiblePreguntaFormada = true;
-            $window.localStorage.setItem('preguntasEncuesta', JSON.stringify($scope.listadoPregunta));
+            //$window.localStorage.setItem('preguntasEncuesta', JSON.stringify($scope.listadoPregunta));
         };
 
 
@@ -326,17 +322,17 @@ angular.module('proyectoSaludApp')
         !dato.otros ? dato.otros = true : dato.otros = false;
     };
 
-    $scope.editarPregunta = function (scope) {
-        $scope.preguntaEdicionConScope = scope.$modelValue;
+    $scope.editarPregunta = function (pregunta) {
+        $scope.preguntaEdicionConScope = pregunta;
         $scope.preguntaEdicion.splice(0, $scope.preguntaEdicion.length);
-        preguntaEdicion = angular.copy(scope.$modelValue);
+        preguntaEdicion = angular.copy(pregunta);
         $scope.preguntaEdicion.push(preguntaEdicion);
     };
 
     $scope.asignarEdicion = function () {
-        $scope.preguntaEdicionConScope.title = preguntaEdicion.title;
+        $scope.preguntaEdicionConScope.str_enunciado = preguntaEdicion.str_enunciado;
         for(var i = preguntaEdicion.nodes.length-1; i >=0; i--){
-            $scope.preguntaEdicionConScope.nodes[i].title = preguntaEdicion.nodes[i].title;
+            $scope.preguntaEdicionConScope.nodes[i].str_descripcion = preguntaEdicion.nodes[i].str_descripcion;
             $scope.preguntaEdicionConScope.nodes[i].otros ? $scope.preguntaEdicionConScope.nodes[i].cuales = preguntaEdicion.nodes[i].cuales : console
                 .log('Ningun Cambio');
         }
@@ -344,9 +340,20 @@ angular.module('proyectoSaludApp')
 
 
 //Funcion que remueve una opcion de respuesta una vez en el array de las preguntas ya ingresadas.
-      $scope.remove = function(scope) {
-        console.log(scope.remove());
-      };
+  $scope.eliminarElemento = function(scope) {
+      for(var i = 0; i<$scope.listadoPregunta.length; i++){
+          if(bandera == 1){
+              $scope.listadoPregunta[i].id_pregunta = $scope.listadoPregunta[i].id_pregunta - 1;
+          }
+
+          if($scope.listadoPregunta[i].id_pregunta == scope.id_pregunta && bandera == 0) {
+              $scope.listadoPregunta.splice(i,1);
+              i-=1;
+              bandera=1;
+          }
+      }
+      bandera=0;
+  };
 //Funcion que no se que mismo!!!
       $scope.toggle = function(scope) {
         scope.toggle();
@@ -388,17 +395,17 @@ angular.module('proyectoSaludApp')
       };
 
         //--------------------Recursividad para ingresar padres e hijos en las variables seleccionadas.----------------------------
-        var loopRecursivoPadre = function(currentNode){ // Funcion recursiva que toma todos los id's de la variable selecciona y viene el currentNode desde la funcion newSubItem
-            var i, currentChild;
-            if (nodesPadre[nodesPadre.length-1].int_id_padre == currentNode.int_id) {
-                currentNode.respuesta = checked;
+        var loopRecursivoPadre = function(objetoActual){ // Funcion recursiva que toma todos los id's de la variable selecciona y viene el objetoActual desde la funcion newSubItem
+            var i, hijoActual;
+            if (nodesPadre[nodesPadre.length-1].int_id_padre == objetoActual.int_id) {
+                objetoActual.respuesta = checked;
                 nodesPadre.push(
                     {
-                        "int_id":currentNode.int_id,
-                        "int_id_padre":currentNode.int_id_padre,
-                        "flt_numero":currentNode.flt_numero,
-                        "str_descripcion":currentNode.str_descripcion,
-                        "str_estado":currentNode.str_estado,
+                        "int_id":objetoActual.int_id,
+                        "int_id_padre":objetoActual.int_id_padre,
+                        "flt_numero":objetoActual.flt_numero,
+                        "str_descripcion":objetoActual.str_descripcion,
+                        "str_estado":objetoActual.str_estado,
                         "nodes":[],
                         "flt_costo":false,
                         "respuesta":false,
@@ -408,9 +415,9 @@ angular.module('proyectoSaludApp')
                 //nodesPadre[nodesPadre.length-1].nodes.push(nodesPadre[contadorRecursivoPadre++]);
                 iniciaLoopPadre();
             } else {
-                for (i = 0; i < currentNode.nodes.length; i += 1) {
-                    currentChild = currentNode.nodes[i];
-                    loopRecursivoPadre(currentChild);
+                for (i = 0; i < objetoActual.nodes.length; i += 1) {
+                    hijoActual = objetoActual.nodes[i];
+                    loopRecursivoPadre(hijoActual);
                 }
             }
         };
@@ -421,27 +428,27 @@ angular.module('proyectoSaludApp')
             }
         };
 
-        var loopRecursividadSiExiste = function (currentNode) {
-            for (var i = 0; i < currentNode.nodes.length; i++) {
-                currentNode.nodes[i].respuesta = checked;
-                loopRecursividadSiExiste(currentNode.nodes[i]);
+        var loopRecursividadSiExiste = function (objetoActual) {
+            for (var i = 0; i < objetoActual.nodes.length; i++) {
+                objetoActual.nodes[i].respuesta = checked;
+                loopRecursividadSiExiste(objetoActual.nodes[i]);
             }
         };
 //---------------------------------------------------------------------------------------------
         $scope.seleccionCheckBox = function(scope) {
             contadorRecursivoPadre = 0;
             nodesPadre = [];
-            var nodeData = scope.$modelValue;
-            if(nodeData.respuesta) {
+            var productoActual = scope.$modelValue;
+            if(productoActual.respuesta) {
                 checked = true;
-                if (nodeData.int_id_padre != null) {
+                if (productoActual.int_id_padre != null) {
                     nodesPadre.push(
                         {
-                            "int_id":nodeData.int_id,
-                            "int_id_padre":nodeData.int_id_padre,
-                            "flt_numero":nodeData.flt_numero,
-                            "str_descripcion":nodeData.str_descripcion,
-                            "str_estado":nodeData.str_estado,
+                            "int_id":productoActual.int_id,
+                            "int_id_padre":productoActual.int_id_padre,
+                            "flt_numero":productoActual.flt_numero,
+                            "str_descripcion":productoActual.str_descripcion,
+                            "str_estado":productoActual.str_estado,
                             "nodes":[],
                             "flt_costo":false,
                             "respuesta":false,
@@ -449,14 +456,14 @@ angular.module('proyectoSaludApp')
                         }
                     );
                     iniciaLoopPadre();
-                    if(nodeData.nodes.length > 0){loopRecursividadSiExiste(nodeData);}
+                    if(productoActual.nodes.length > 0){loopRecursividadSiExiste(productoActual);}
                 }else{
-                    loopRecursividadSiExiste(nodeData);
+                    loopRecursividadSiExiste(productoActual);
                 }
             }
             else {
                 checked = false;
-                if(nodeData.nodes.length > 0){loopRecursividadSiExiste(nodeData);}
+                if(productoActual.nodes.length > 0){loopRecursividadSiExiste(productoActual);}
             }
         };
 

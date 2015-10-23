@@ -1,0 +1,174 @@
+
+<div class="container"><br/>
+  <!--Ingreso de Cantón-->
+  <div class="row">
+    <div class="col-sm-8 col-sd-offset-2">
+      <div class="thumbnail">
+        <div class="modal-header">
+          <h1 class="modal-title text-center">Nuevo Cantón</h1>
+        </div>
+        <div class="modal-body">
+          <div class="account-wall">
+            <form id="cantonForm" name="cantonForm" class="form-signin">
+              <!--Input de identificador de cantón-->
+              <div ng-class="{'has-error':cantonForm.int_id_canton.$invalid &amp;&amp; cantonForm.int_id_canton.$touched}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Id. Cantón</div>
+                      <input type="text" name="int_id_canton" ng-model="canton.int_id_canton" placeholder="123" maxlength="3" pattern="[-+]?[0-9]*" ng-required="true" class="form-control"/><span ng-if="cantonForm.int_id_canton.$invalid &amp;&amp; cantonForm.int_id_canton.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="cantonForm.int_id_canton.$error.required &amp;&amp; cantonForm.int_id_canton.$touched" class="help-block">Identificador requerido</span><span ng-if="cantonForm.int_id_canton.$error.pattern &amp;&amp; cantonForm.int_id_canton.$dirty" class="help-block">Solo se acepta números. ej. 123</span>
+                  </div>
+                </div>
+              </div>
+              <!--Input de descripción de cantón-->
+              <div ng-class="{'has-error':cantonForm.str_nombre_canton.$invalid &amp;&amp; cantonForm.str_nombre_canton.$touched}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Nombre del cantón</div>
+                      <input type="text" name="str_nombre_canton" ng-model="canton.str_descripcion" placeholder="Ingrese el nombre del cantón" maxlength="100" ng-required="true" class="form-control"/><span ng-if="cantonForm.str_nombre_canton.$invalid &amp;&amp; cantonForm.str_nombre_canton.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="cantonForm.str_nombre_canton.$error.required &amp;&amp; cantonForm.str_nombre_canton.$touched" class="help-block">Nombre de cantón requerido</span>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!--Botones de acceder y cancelación-->
+          <div class="form-group"><a href="#/" class="btn btn-default">Cancelar</a>
+            <button type="submit" data-dismiss="modal" ng-click="guardarCanton()" ng-disabled="cantonForm.$invalid" class="btn btn-primary">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Ingreso de Parroquia-->
+  <div class="row">
+    <div class="col-sm-8 col-sd-offset-2">
+      <div class="thumbnail">
+        <div class="modal-header">
+          <h1 class="modal-title text-center">Nueva Parroquia</h1>
+        </div>
+        <div class="modal-body">
+          <div class="account-wall">
+            <form id="parroquiaForm" name="parroquiaForm" class="form-signin">
+              <!--Combo del cantón-->
+              <div ng-class="{'has-error':parroquiaForm.cantonParroquia.$invalid &amp;&amp; parroquiaForm.cantonParroquia.$untouched &amp;&amp; validarComboBox(modeloCantonSimple)}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Cantón</div>
+                      <select ng-model="modeloCantonSimple" name="cantonParroquia" ng-options="canton as canton.str_descripcion for canton in listadoCanton" class="form-control">
+                        <option value="">Seleccione un cantón</option>
+                      </select><span ng-if="parroquiaForm.cantonParroquia.$invalid &amp;&amp; parroquiaForm.cantonParroquia.$touched &amp;&amp; validarComboBox(cantonParroquia)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="parroquiaForm.cantonParroquia.$error.required &amp;&amp; parroquiaForm.cantonParroquia.$touched" class="help-block">Cantón requerido</span>
+                  </div>
+                </div>
+              </div>
+              <!--Input de identificador de parroquia-->
+              <div ng-class="{'has-error':parroquiaForm.int_id_parroquia.$invalid &amp;&amp; parroquiaForm.int_id_parroquia.$touched}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Id. Parroquia</div>
+                      <input type="text" name="int_id_parroquia" ng-model="parroquia.int_id_parroquia" placeholder="123" maxlength="3" pattern="[-+]?[0-9]*" ng-required="true" class="form-control"/><span ng-if="parroquiaForm.int_id_parroquia.$invalid &amp;&amp; parroquiaForm.int_id_parroquia.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="parroquiaForm.int_id_parroquia.$error.required &amp;&amp; parroquiaForm.int_id_parroquia.$touched" class="help-block">Identificador requerido</span><span ng-if="parroquiaForm.int_id_parroquia.$error.pattern &amp;&amp; parroquiaForm.int_id_parroquia.$dirty" class="help-block">Solo se acepta números. ej. 123</span>
+                  </div>
+                </div>
+              </div>
+              <!--Input de descripción de parroquia-->
+              <div ng-class="{'has-error':parroquiaForm.str_nombre_parroquia.$invalid &amp;&amp; parroquiaForm.str_nombre_parroquia.$touched}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Nombre de la parroquia</div>
+                      <input type="text" name="str_nombre_parroquia" ng-model="parroquia.str_nombre_parroquia" placeholder="Ingrese el nombre de la parroquia" maxlength="100" ng-required="true" class="form-control"/><span ng-if="parroquiaForm.str_nombre_parroquia.$invalid &amp;&amp; parroquiaForm.str_nombre_parroquia.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="parroquiaForm.str_nombre_parroquia.$error.required &amp;&amp; parroquiaForm.str_nombre_parroquia.$touched" class="help-block">Nombre de la parroquia requerido</span>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!--Botones de acceder y cancelación-->
+          <div class="form-group"><a href="#/" class="btn btn-default">Cancelar</a>
+            <button type="submit" data-dismiss="modal" ng-click="guardarParroquia()" ng-disabled="parroquiaForm.$invalid" class="btn btn-primary">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Ingreso de Comunidad-->
+  <div class="row">
+    <div class="col-sm-8 col-sd-offset-2">
+      <div class="thumbnail">
+        <div class="modal-header">
+          <h1 class="modal-title text-center">Nueva Comunidad</h1>
+        </div>
+        <div class="modal-body">
+          <div class="account-wall">
+            <form id="comunidadForm" name="comunidadForm" class="form-signin">
+              <!--Combo del cantón-->
+              <div ng-class="{'has-error':comunidadForm.cantonComunidad.$invalid &amp;&amp; comunidadForm.cantonComunidad.$pristine}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Cantón</div>
+                      <select ng-model="modeloCanton" name="cantonComunidad" ng-options="canton as canton.str_descripcion for canton in listadoCanton" class="form-control">
+                        <option value="">Seleccione un cantón</option>
+                      </select><span ng-if="comunidadForm.cantonComunidad.$invalid &amp;&amp; comunidadForm.cantonComunidad.$pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="comunidadForm.cantonComunidad.$error.required &amp;&amp; comunidadForm.cantonComunidad.$touched" class="help-block">Cantón requerido</span>
+                  </div>
+                </div>
+              </div>
+              <!--Combo de parroquia-->
+              <div ng-class="{'has-error':comunidadForm.parroquiaComunidad.$invalid &amp;&amp; comunidadForm.parroquiaComunidad.$pristine}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Parroquia</div>
+                      <select ng-model="modeloParroquia" name="parroquiaComunidad" ng-options="parroquia as parroquia.str_descripcion for parroquia in listadoParroquia" class="form-control">
+                        <option value="">Seleccione una parroquia</option>
+                      </select><span ng-if="comunidadForm.parroquiaComunidad.$invalid &amp;&amp; comunidadForm.parroquiaComunidad.$pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="comunidadForm.parroquiaComunidad.$error.required &amp;&amp; comunidadForm.parroquiaComunidad.$touched" class="help-block">Parroquia requerido</span>
+                  </div>
+                </div>
+              </div>
+              <!--Input de identificador de comunidad-->
+              <div ng-class="{'has-error':comunidadForm.int_id_comunidad.$invalid &amp;&amp; comunidadForm.int_id_comunidad.$touched}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Id. Comunidad</div>
+                      <input type="text" name="int_id_comunidad" ng-model="comunidad.int_id_comunidad" placeholder="123" maxlength="3" pattern="[-+]?[0-9]*" ng-required="true" class="form-control"/><span ng-if="comunidadForm.int_id_comunidad.$invalid &amp;&amp; comunidadForm.int_id_comunidad.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="comunidadForm.int_id_comunidad.$error.required &amp;&amp; comunidadForm.int_id_comunidad.$touched" class="help-block">Identificador requerido</span><span ng-if="comunidadForm.int_id_comunidad.$error.pattern &amp;&amp; comunidadForm.int_id_comunidad.$dirty" class="help-block">Solo se acepta números. ej. 123</span>
+                  </div>
+                </div>
+              </div>
+              <!--Input de descripción de comunidad-->
+              <div ng-class="{'has-error':comunidadForm.str_nombre_comunidad.$invalid &amp;&amp; comunidadForm.str_nombre_comunidad.$touched}" class="form-group">
+                <div class="row">
+                  <div class="col-sm-10 col-sm-offset-1">
+                    <div class="input-group">
+                      <div class="input-group-addon">Nombre de la comunidad</div>
+                      <input type="text" name="str_nombre_comunidad" ng-model="comunidad.str_nombre_comunidad" placeholder="Ingrese el nombre de la parroquia" maxlength="100" ng-required="true" class="form-control"/><span ng-if="comunidadForm.str_nombre_comunidad.$invalid &amp;&amp; comunidadForm.str_nombre_comunidad.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    </div><span ng-if="comunidadForm.str_nombre_comunidad.$error.required &amp;&amp; comunidadForm.str_nombre_comunidad.$touched" class="help-block">Nombre de comunidad requerido</span>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!--Botones de acceder y cancelación-->
+          <div class="form-group"><a href="#/" class="btn btn-default">Cancelar</a>
+            <button type="submit" data-dismiss="modal" ng-click="guardarComunidad()" ng-disabled="comunidadForm.$invalid" class="btn btn-primary">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
