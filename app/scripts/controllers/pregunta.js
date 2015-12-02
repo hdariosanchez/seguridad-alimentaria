@@ -6,11 +6,14 @@ angular.module('proyectoSaludApp')
         var urlEncuestaVariable = '/api/user/admin/pregunta/encuesta/variable';
         var urlProductoArbol = '/api/user/admin/producto/arbol';
         var urlFrecuencia = '/api/user/admin/frecuencia';
+        var urlGuardarMatriz = '/api/user/admin/matriz/guardar';
         var nodesPadre = []; //Llena los id's de las variables seleccionada mediante recursividad a profundidad en la funcion SubItem()
         var checked = false;
         var contadorRecursivoPadre = 0;
         var productosSeleccionados = [];
         var frecuenciasSeleccionadas = [];
+        $scope.listadoColumnas = [];
+        $scope.listadoFila = [];
         //$scope.listadoPregunta = JSON.parse($window.localStorage.getItem('preguntasEncuesta')) || [];
         $scope.listadoPregunta = [];
 
@@ -63,7 +66,7 @@ angular.module('proyectoSaludApp')
                         int_id_padre: contador,
                         str_descripcion: "",
                         str_desc_fin: "",
-                        type: $scope.respuesta.tipoRespuesta.type,
+                        "int_id_tipo_pregunta": $scope.respuesta.tipoRespuesta.type,
                         numEscala:numEscala++,
                         numId:numId++,
                         valor: false,
@@ -83,38 +86,48 @@ angular.module('proyectoSaludApp')
                                                                           $scope.objTipoPregunta = [
                                                                             {
                                                                               value:1,
-                                                                              type: "checkbox",
+                                                                              "type": "checkbox",
                                                                               descripcion: "Selección Múltiple"
                                                                             },
                                                                             {
                                                                               value:2,
-                                                                              type: "radio",
+                                                                              "type": "radio",
                                                                               descripcion: "Selección Simple"
                                                                             },
                                                                             {
                                                                               value:3,
-                                                                              type: "text",
+                                                                              "type": "text",
                                                                               descripcion: "Texto"
                                                                             },
                                                                             {
                                                                               value:4,
-                                                                              type: "range",
+                                                                              "type": "range",
                                                                               descripcion: "Escala"
                                                                             },
                                                                           {
                                                                               value:5,
-                                                                              type: "date",
+                                                                              "type": "date",
                                                                               descripcion: "Fecha"
                                                                           },
                                                                           {
                                                                               value:6,
-                                                                              type: "time",
+                                                                              "type": "time",
                                                                               descripcion: "Hora"
                                                                           },
                                                                           {
                                                                               value:7,
-                                                                              type: "canasta",
+                                                                              "type": "canasta",
                                                                               descripcion: "Canasta"
+                                                                          },
+                                                                          {
+                                                                              value:8,
+                                                                              "type": "matriz",
+                                                                              descripcion: "Matriz"
+                                                                          },
+                                                                          {
+                                                                              value:9,
+                                                                              "type": "tabla",
+                                                                              descripcion: "Tabla"
                                                                           }
                                                                           ];
 
@@ -150,7 +163,7 @@ angular.module('proyectoSaludApp')
           int_id_padre: contador,
           str_descripcion: "",
           str_desc_fin: "",
-          type: $scope.respuesta.tipoRespuesta.type,
+          "int_id_tipo_pregunta": $scope.respuesta.tipoRespuesta.type,
           numEscala:numEscala++,
           numId:numId++,
           valor: false,
@@ -181,7 +194,7 @@ angular.module('proyectoSaludApp')
               int_id_padre: contador,
               str_descripcion: respuestaNueva.descripcionRespuesta,
               str_desc_fin: "",
-              type: respuestaNueva.tipoRespuesta.type,
+              "int_id_tipo_pregunta": respuestaNueva.tipoRespuesta.type,
               numEscala:numEscala++,
               numId:numId++,
               valor: false,
@@ -208,7 +221,7 @@ angular.module('proyectoSaludApp')
             bandera=0;
         };
 
-
+    $scope.preguntaNueva = [];
         //Funcion que agrega la pregunta con sus respuestas.
         $scope.guardarPregunta = function(preguntaNueva){
             if($scope.respuesta.tipoRespuesta.type === "canasta"){
@@ -221,11 +234,12 @@ angular.module('proyectoSaludApp')
                 angular.forEach($scope.arbolProducto, function (grupo) {
                     for(var i = 0; grupo.nodes.length > i; i++ ){
                         if(grupo.nodes[i].respuesta){
-                            grupo.nodes[i].frecuencia = frecuenciasSeleccionadas;
-                            productosSeleccionados.push(angular.copy(grupo.nodes[i]));
+                            var frecuencias = angular.copy(grupo.nodes[i]);
+                            frecuencias.nodes = frecuenciasSeleccionadas;
+                            productosSeleccionados.push(angular.copy(frecuencias));
                         }
                     }
-
+                    //alert('Frecuencia seleccionafas '+JSON.stringify(frecuenciasSeleccionadas));
                 });
                 $scope.listadoPregunta.push(
                     {
@@ -234,13 +248,12 @@ angular.module('proyectoSaludApp')
                         int_obligatoria: preguntaNueva.obligatoriedadPregunta,
                         str_ayuda: preguntaNueva.ayudaPregunta,
                         int_id_variable: $scope.variableSeleccionada,
-                        type: $scope.respuesta.tipoRespuesta.type,
+                        "int_id_tipo_pregunta": $scope.respuesta.tipoRespuesta.type,
                         int_id_padre: null,
                         numId: numIdPregunta++,
                         str_enunciado: preguntaNueva.descripcionPregunta,
                         codigo: preguntaNueva.codigoPregunta,
-                        nodes:[],
-                        productos:  productosSeleccionados
+                        nodes:productosSeleccionados
                     }
                 );
 
@@ -252,7 +265,7 @@ angular.module('proyectoSaludApp')
                         int_obligatoria: preguntaNueva.obligatoriedadPregunta,
                         str_ayuda: preguntaNueva.ayudaPregunta,
                         int_id_variable: $scope.variableSeleccionada,
-                        type: $scope.respuesta.tipoRespuesta.type,
+                        "int_id_tipo_pregunta": $scope.respuesta.tipoRespuesta.type,
                         int_id_padre: null,
                         numId: numIdPregunta++,
                         str_enunciado: preguntaNueva.descripcionPregunta,
@@ -288,7 +301,7 @@ angular.module('proyectoSaludApp')
                         int_id_padre: contador,
                         str_descripcion: "",
                         str_desc_fin: "",
-                        type: $scope.respuesta.tipoRespuesta.type,
+                        "int_id_tipo_pregunta": $scope.respuesta.tipoRespuesta.type,
                         numEscala: numEscala++,
                         numId: numId++,
                         valor: false,
@@ -300,24 +313,20 @@ angular.module('proyectoSaludApp')
                 );
                 $scope.visiblePreguntaFormada = true;
             //$window.localStorage.setItem('preguntasEncuesta', JSON.stringify($scope.listadoPregunta));
-        };
+            $scope.preguntaNueva.push($scope.listadoPregunta[$scope.listadoPregunta.length-1]);
 
-
-
-
-
-
-        $scope.guardar = function(){
             $http({
                 method: 'POST',
                 url: '/api/user/admin/pregunta/guardar',
-                data: $scope.listadoPregunta
+                data: $scope.preguntaNueva
             }).success(function(data) {
-                    alert('Succeful en $scope.guardar en script/pregunta.js');
+                alert('Succeful en $scope.guardar en script/pregunta.js');
             }).error(function() {
                 alert('Error en $scope.guardar en script/pregunta.js');
             });
+            $scope.preguntaNueva = [];
         };
+
     $scope.agregarOtros = function (dato) {
         !dato.otros ? dato.otros = true : dato.otros = false;
     };
@@ -340,62 +349,51 @@ angular.module('proyectoSaludApp')
 
 
 //Funcion que remueve una opcion de respuesta una vez en el array de las preguntas ya ingresadas.
-  $scope.eliminarElemento = function(scope) {
-      for(var i = 0; i<$scope.listadoPregunta.length; i++){
-          if(bandera == 1){
-              $scope.listadoPregunta[i].id_pregunta = $scope.listadoPregunta[i].id_pregunta - 1;
-          }
-
-          if($scope.listadoPregunta[i].id_pregunta == scope.id_pregunta && bandera == 0) {
-              $scope.listadoPregunta.splice(i,1);
-              i-=1;
-              bandera=1;
-          }
-      }
-      bandera=0;
+  $scope.eliminarElemento = function(preguntaEliminar) {
+      $http({
+          method: 'POST',
+          url: '/api/user/admin/pregunta/eliminar',
+          params: {'int_id': preguntaEliminar.int_id}
+      }).success(function(exito){
+          alert('LLEGO CON EXITO');
+          //$scope.listadoPregunta = preguntas;
+      }).error(function(err){
+          alert('Error: Al obtener las preguntas de la encuesta actual.'+err);
+      });
   };
-//Funcion que no se que mismo!!!
-      $scope.toggle = function(scope) {
-        scope.toggle();
-      };
-//Funcion de mover un registro ultimo al inicio de todos los registros.
-      $scope.moveLastToTheBegginig = function () {
-        var a = $scope.listadoPregunta.pop();
-        $scope.listadoPregunta.splice(0,0, a);
-      };
-//Funcion que ingresa un nuevo registro --No se le usa.
-      $scope.newItem = function (scope) {
-        var nodeData = scope.$modelValue;
-        alert(JSON.stringify(nodeData));
-        $scope.listadoPregunta.push({
-          id: nodeData.id * 10 + nodeData.nodes.length,
-          title: nodeData.title + '.' + (nodeData.nodes.length + 1),
-          nodes: []
-        });
-      };
-//Funcion que ingresa una nueva opcion de respuesta en la pregunta.
-      $scope.newSubItem = function(scope) {
-        var nodeData = scope.$modelValue;
-        nodeData.nodes.push({
-          //id: nodeData.id * 10 + nodeData.nodes.length,
-          //title: nodeData.title + '.' + (nodeData.nodes.length + 1),
-          //nodes: [],
-          id: nodeData.id.length+1,
-          type: nodeData.nodes[0].type,
-          int_id_padre: nodeData.id,
-          flt_numero: "3",
-          title: "respuesta 1.1",
-          nodes: []
-        });
-        console.log(nodeData);
-      };
+        //--------------------------------------------------------------------------------------
 
-      var getRootNodesScope = function() {
-        return angular.element(document.getElementById("tree-root")).scope();
-      };
+            $http({
+                method: 'GET',
+                url: '/api/user/admin/herramienta/pregunta',
+                params: {'intId': $scope.encuesta.int_id}
+            }).success(function(preguntas){
+                $scope.listadoPregunta = preguntas;
+                //alert(JSON.stringify($scope.listadoPregunta));
+            }).error(function(err){
+                alert('Error: Al obtener las preguntas de la encuesta actual.'+err);
+            });
+
+
+        //----------------------------------------------------------------------------------------
+
+        $scope.ingresarRespuesta = function () {
+            $http({
+                method: 'POST',
+                url: '/api/user/vistaEncuesta/ingresar',
+                data: $scope.preguntas
+            })
+                .success(function(dato){
+                    alert('ingreso de respuesta exitoso.');
+                })
+                .error(function(err){
+                    alert('Error en el ingreso de las respuestas desde el controlador vistaEncuesta en la funcion ingresarRespuesta');
+                })
+        };
+
 
         //--------------------Recursividad para ingresar padres e hijos en las variables seleccionadas.----------------------------
-        var loopRecursivoPadre = function(objetoActual){ // Funcion recursiva que toma todos los id's de la variable selecciona y viene el objetoActual desde la funcion newSubItem
+        var loopRecursivoPadre = function(objetoActual) { // Funcion recursiva que toma todos los id's de la variable selecciona y viene el objetoActual desde la funcion newSubItem
             var i, hijoActual;
             if (nodesPadre[nodesPadre.length-1].int_id_padre == objetoActual.int_id) {
                 objetoActual.respuesta = checked;
@@ -434,6 +432,9 @@ angular.module('proyectoSaludApp')
                 loopRecursividadSiExiste(objetoActual.nodes[i]);
             }
         };
+        
+        
+        
 //---------------------------------------------------------------------------------------------
         $scope.seleccionCheckBox = function(scope) {
             contadorRecursivoPadre = 0;
@@ -467,4 +468,129 @@ angular.module('proyectoSaludApp')
             }
         };
 
+
+        var contadorColumna = 1;
+        $scope.agregarColumna = function(columna){
+            $scope.listadoColumnas.push(
+                {
+                    'int_id': contadorColumna++,
+                    'str_descripcion': columna.str_descripcionColumna,
+                    'tabular': [{'int_id':1, 'str_descripcion':''}]
+                }
+            );
+        };
+
+        $scope.eliminarColumna = function(scope){
+            for(var i=0; i<$scope.listadoColumnas.length; i++){
+                if(bandera == 1){
+                    $scope.listadoColumnas[i].int_id = $scope.listadoColumnas[i].int_id - 1;
+                }
+                if($scope.listadoColumnas[i].int_id == scope.int_id && bandera == 0) {
+                    $scope.listadoColumnas.splice(i,1);
+                    i-=1;
+                    bandera=1;
+                }
+            }
+            bandera=0;
+
+        };
+
+        var contadorFila = 1;
+        $scope.agregarFila = function(fila){
+            $scope.listadoFila.push(
+                {
+                    'int_id': contadorFila++,
+                    'str_descripcion': fila.str_descripcionFila
+                }
+            );
+//            alert(JSON.stringify($scope.listadoFila));
+        };
+
+        $scope.eliminarFila = function(scope) {
+            for(var i=0; i<$scope.listadoFila.length; i++){
+                if(bandera == 1){
+                    $scope.listadoFila[i].int_id = $scope.listadoFila[i].int_id - 1;
+                }
+                if($scope.listadoFila[i].int_id == scope.int_id && bandera == 0) {
+                    $scope.listadoFila.splice(i,1);
+                    i-=1;
+                    bandera=1;
+                }
+            }
+            bandera=0;
+        };
+
+        $scope.agregarTabular = function(columna, tabu) {
+            for(var i=0; i<columna.tabular.length; i++) {
+                if(bandera == 1){
+                    columna.tabular[i].int_id = columna.tabular[i].int_id + 1;
+                }
+                if(columna.tabular[i].int_id == tabu.int_id && bandera == 0) {
+                    columna.tabular.splice(i+1,0,
+                        {
+                            "int_id": tabu.int_id+1,
+                            'str_descripcion':''
+                        }
+                    );
+                    i+=1;
+                    bandera=1;
+                }
+            }
+            bandera=0;
+        };
+
+        $scope.eliminarTabular = function(columna, tabu) {
+            if(columna.tabular.length>1){
+                for(var i=0; i<columna.tabular.length; i++){
+                    if(bandera == 1) {
+                        columna.tabular[i].int_id = columna.tabular[i].int_id - 1;
+                    }
+
+                    if(columna.tabular[i].int_id == tabu.int_id && bandera == 0) {
+                        columna.tabular.splice(i,1);
+                        i-=1;
+                        bandera=1;
+                    }
+                }
+                bandera=0;
+            };
+        }
+
+        $scope.guardarMatriz = function (pregunta) {
+            $scope.preguntaMatriz =
+                {
+                    'int_id_encuesta': $scope.encuesta.int_id,
+                    'int_obligatoria': pregunta.obligatoriedadPregunta,
+                    'str_ayuda': pregunta.ayudaPregunta,
+                    'int_id_variable': $scope.variableSeleccionada,
+                    'int_id_tipo_pregunta': $scope.respuesta.tipoRespuesta.type,
+                    'str_enunciado': pregunta.descripcionPregunta,
+                    'codigo': pregunta.codigoPregunta,
+                    'columna': $scope.listadoColumnas,
+                    'numId': numIdPregunta++,
+                    'fila': $scope.listadoFila
+                };
+            console.log(JSON.stringify($scope.preguntaMatriz));
+        };
+/*
+        MyAPIServiceFactory.obtener(urlGuardarMatriz, $scope.preguntaMatriz)
+            .success(function (msg) {
+                alert('ingreso Correctamente '+JSON.stringify(msg));
+            })
+            .error(function (err) {
+                alert(JSON.stringify(err));
+            });
+            */
+/*
+        {"int_id_encuesta":"15","int_obligatoria":true,"str_ayuda":"FAÑLSKDJF","int_id_variable":"8",
+            "int_id_tipo_pregunta":"matriz","str_enunciado":"kjflka","codigo":"JAKJ",
+            "columna":[{"int_id":1,"str_descripcion":"FAÑL",
+            "tabular":[{"int_id":1,"str_descripcion":"DSAF","$$hashKey":"object:207"},
+                {"int_id":2,"str_descripcion":"AFDS","$$hashKey":"object:229"}],"$$hashKey":"object:205"},
+            {"int_id":2,"str_descripcion":"KJFAJDF","tabular":[{"int_id":1,"str_descripcion":"FAD","$$hashKey":"object:215"}],
+                "$$hashKey":"object:213"},{"int_id":3,"str_descripcion":"FSJÑ","tabular":[{"int_id":1,"str_descripcion":"AFDAFS",
+                "$$hashKey":"object:223"}],"$$hashKey":"object:221"}],"fila":[{"int_id":1,"str_descripcion":"FADF","$$hashKey":"object:235"},
+            {"int_id":2,"str_descripcion":"DFJK","$$hashKey":"object:237"},{"int_id":3,"str_descripcion":"DDSJFAÑ","$$hashKey":"object:239"},
+            {"int_id":4,"str_descripcion":"KJFD","$$hashKey":"object:241"}]}
+  */
     });

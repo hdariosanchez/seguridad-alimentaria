@@ -50,7 +50,7 @@ exports.getlistaActivo = function (req, res) {
 exports.getlistadoEncuestaVariable = function (req, res) {
   data_encuesta_variable.connect();
   data_encuesta_variable.db_get_listadoEncuestaVariable(req, function (datos) {
-    if (datos){
+    if (datos) {
       res.status(200).json(datos);
     } else {
       res.status(500).json({
@@ -211,7 +211,7 @@ exports.guardarDefinitivo = function(req, res){
 };
 
 
-exports.agregarEncuestaVariables = function(req,res){
+exports.agregarEncuestaVariables = function(req,res) {
   data_encuesta_variable.connect();
   try{
       var verificador = true;

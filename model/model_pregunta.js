@@ -71,25 +71,25 @@ exports.db_insertar = function(preguntaNueva, cb) {
     var int_obligatoria = null;
     var insertado = true;
 
-    if(preguntaNueva.type === 'checkbox'){
+    if(preguntaNueva.int_id_tipo_pregunta === 'checkbox'){
         int_id_tipo_pregunta = 4;
     }
-    if(preguntaNueva.type === 'radio'){
+    if(preguntaNueva.int_id_tipo_pregunta === 'radio'){
         int_id_tipo_pregunta = 3;
     }
-    if(preguntaNueva.type === 'text'){
+    if(preguntaNueva.int_id_tipo_pregunta === 'text'){
         int_id_tipo_pregunta = 1;
     }
-    if(preguntaNueva.type === 'range'){
+    if(preguntaNueva.int_id_tipo_pregunta === 'range'){
         int_id_tipo_pregunta = 5;
     }
-    if(preguntaNueva.type === 'date'){
+    if(preguntaNueva.int_id_tipo_pregunta === 'date'){
         int_id_tipo_pregunta = 6;
     }
-    if(preguntaNueva.type === 'time'){
+    if(preguntaNueva.int_id_tipo_pregunta === 'time'){
         int_id_tipo_pregunta = 7;
     }
-    if(preguntaNueva.type === 'canasta'){
+    if(preguntaNueva.int_id_tipo_pregunta === 'canasta'){
         int_id_tipo_pregunta = 10;
     }
     if(preguntaNueva.int_obligatoria){
@@ -108,6 +108,33 @@ exports.db_insertar = function(preguntaNueva, cb) {
             cb(insertado);
         });
 };
+
+exports.db_insertar_matriz = function(preguntaNueva, cb) {
+    var int_id_tipo_pregunta = null;
+    var int_obligatoria = null;
+    var insertado = true;
+
+    if(preguntaNueva.int_id_tipo_pregunta === 'matriz'){
+        int_id_tipo_pregunta = 12;
+    }
+    if(preguntaNueva.int_obligatoria){
+        int_obligatoria = 1;
+    }
+    if(!preguntaNueva.int_obligatoria){
+        int_obligatoria = 0;
+    }
+    client.query("INSERT INTO pregunta (int_id_encuesta, int_id_variable, int_id_tipo_pregunta, int_numero, str_enunciado, str_ayuda, int_obligatoria) VALUES (?, ?, ?, ?, ?, ?, ?);",
+        [preguntaNueva.int_id_encuesta, preguntaNueva.int_id_variable, int_id_tipo_pregunta, preguntaNueva.numId, preguntaNueva.str_enunciado || 'Sin definir', preguntaNueva.str_ayuda || 'Sin definir', int_obligatoria])
+        .on('error', function(err) {
+            insertado = false;
+            console.log('Error: SQL error model_pregunta / db_insertar : ' + inspect(err));
+        })
+        .on('end', function() {
+            cb(insertado);
+        });
+};
+
+
 
 //OBSERVACIÓN PARA ELIMINAR
 // elimina un elemento de la tabla "producto" de acuerdo a su "id_producto"
@@ -158,7 +185,21 @@ exports.db_actualizar = function (productoEditar, cb){
         .on('end', function() {
             cb(actualizado);
         });
-}
+};
+
+exports.eliminarPregunta = function(preguntaObj, cb) {
+    var data = [];
+    var eliminado = true;
+     client.query("DELETE FROM pregunta WHERE int_id = ?;",
+     [preguntaObj.int_id])
+         .on('error', function(err) {
+             eliminado = false;
+             console.log('Error: SQL error model_pregunta / db_actualizar : ' + inspect(err));
+         })
+         .on('end', function() {
+             cb(eliminado);
+         });
+};
 
 // desconecta la base de datos
 exports.disconnect = function() {

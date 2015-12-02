@@ -93,6 +93,7 @@ exports.getlistadovistaEncuesta = function(req, res) {
                     }
                     arrayProducto = datos;
                     data_vistaEncuesta.db_get_listado_canasta_frecuencia(req, res, function (datos) {
+
                         console.log('Viendo los datos de la frecuencia '+JSON.stringify(datos));
                         for(i=datos.length - 1; i>=0; i--){
                             datos[i][padreNombre] = datos[i].int_id_pregunta;
@@ -103,13 +104,30 @@ exports.getlistadovistaEncuesta = function(req, res) {
                             if(datos[i].int_id_tipo_pregunta == '10'){
                                 datos[i].int_id_tipo_pregunta = 'canasta';
                             }
+                        };
+                        for(i=parents.length - 1; i>=0; i--){
+
+                            for(var k = arrayProducto.length - 1;k>=0; k--){
+                                for(var j = datos.length-1; j>=0; j--) {
+
+                                    if((parents[i].int_id_tipo_pregunta == 10) && (arrayProducto[k].int_id_padre == parents[i].int_id) && (parents[i].int_id == datos[j].int_id_padre)){
+                                        arrayProducto[k].nodes.push(datos[j]);
+                                    }
+
+                                }
+                            }
+
                         }
 
-                        for(i=arrayProducto.length - 1; i>=0; i--){
-                            arrayProducto[i].nodes = datos;
-                            childrens.push(arrayProducto[i]);
-                        }
+                        for(var l = arrayProducto.length-1; l>=0; l--){
+                            childrens.push(arrayProducto[l]);
+                        }/*
 
+                                                for(i=arrayProducto.length - 1; i>=0; i--){
+                                                    arrayProducto[i].nodes = datos;
+                                                    childrens.push(arrayProducto[i]);
+                                                }
+*/
                         for(var j=0; j<2; j++) {
                             parents.forEach(function (parent) {
                                 loopChildrens(childrens, parent, j);
@@ -272,4 +290,123 @@ var limpiaDatos = function(){
     childrens.splice(0, childrens.length);
     console.log("Longitud de json->"+childrens.length);
 
+};
+
+
+//-----------------OBTIENE LAS PREGUNTAS PARA VISUALIZAR EN PREGUNTA.JADE
+exports.getlistadopregunta = function(req, res) {
+    arrayProducto = [];
+    data_vistaEncuesta.connect();
+    data_vistaEncuesta.db_get_listadoPregunta(req,res,function (datos) {
+        limpiaDatos();
+        for(i=datos.length - 1; i>=0; i--){
+            datos[i][padreNombre]= null;
+            datos[i][nombreRespuesta]= '';
+            datos[i][childrenNombre]=[];
+
+            row=datos[i];
+            if(datos[i].int_id_tipo_pregunta == '1'){
+                datos[i].int_id_tipo_pregunta = 'text';
+            }
+            if(datos[i].int_id_tipo_pregunta == '6'){
+                datos[i].int_id_tipo_pregunta = 'date';
+            }
+            if(datos[i].int_id_tipo_pregunta == '7'){
+                datos[i].int_id_tipo_pregunta = 'time';
+            }
+            parents.push(row);
+        }
+        data_vistaEncuesta.db_get_listadoEscala(req, res,function (datos) {
+            for(i=datos.length - 1; i>=0; i--){
+                datos[i][padreNombre] = datos[i].int_id_pregunta;
+                datos[i][nombreRespuesta]= false;
+                datos[i][respuestaOtros]='';
+                datos[i][childrenNombre]=[];
+
+                if(datos[i].int_id_tipo_pregunta == '5'){
+                    datos[i].int_id_tipo_pregunta = 'range';
+                }
+                row=datos[i];
+                childrens.push(row);
+            }
+
+            data_vistaEncuesta.db_get_listadoTest(req, res, function (datos) {
+                for(i=datos.length - 1; i>=0; i--){
+                    datos[i][padreNombre] = datos[i].int_id_pregunta;
+                    datos[i][nombreRespuesta]= false;
+                    datos[i][respuestaOtros]='';
+                    datos[i][childrenNombre]=[];
+
+                    if(datos[i].int_id_tipo_pregunta == '4'){
+                        datos[i].int_id_tipo_pregunta = 'checkbox';
+                    }
+                    if(datos[i].int_id_tipo_pregunta == '3'){
+                        datos[i].int_id_tipo_pregunta = 'radio';
+                    }
+
+                    row=datos[i];
+                    childrens.push(row);
+                }
+                data_vistaEncuesta.db_get_listado_canasta_producto(req, res, function (datos) {
+                    for(i=datos.length - 1; i>=0; i--){
+                        datos[i][padreNombre] = datos[i].int_id_pregunta;
+                        datos[i][nombreRespuesta]= false;
+                        datos[i][childrenNombre]=[];
+                        if(datos[i].int_id_tipo_pregunta == 10){
+                            datos[i].int_id_tipo_pregunta = 'canasta';
+                        }
+                        //row=datos[i];
+                        //childrens.push(row);
+                    }
+                    arrayProducto = datos;
+                    data_vistaEncuesta.db_get_listado_canasta_frecuencia(req, res, function (datos) {
+                        //console.log('Viendo los datos de la frecuencia '+JSON.stringify(datos));
+                        //console.log('Viendo los datos del producto '+JSON.stringify(arrayProducto));
+                        for(i=datos.length - 1; i>=0; i--){
+                            datos[i][padreNombre] = datos[i].int_id_pregunta;
+                            datos[i][nombreRespuesta] = false;
+                            datos[i]["flt_costo"]= '';
+                            datos[i]["flt_peso"]= "";
+                            //datos[i][childrenNombre]=[];
+                            if(datos[i].int_id_tipo_pregunta == 10){
+                                datos[i].int_id_tipo_pregunta = 'canasta';
+                            }
+                        }
+
+                        for(i=parents.length - 1; i>=0; i--){
+
+                            for(var k = arrayProducto.length - 1;k>=0; k--){
+                                for(var j = datos.length-1; j>=0; j--) {
+
+                                    if((parents[i].int_id_tipo_pregunta == 10) && (arrayProducto[k].int_id_padre == parents[i].int_id) && (parents[i].int_id == datos[j].int_id_padre)){
+                                         arrayProducto[k].nodes.push(datos[j]);
+                                     }
+
+                                }
+                            }
+
+                        }
+
+                        for(var l = arrayProducto.length-1; l>=0; l--){
+                            childrens.push(arrayProducto[l]);
+                        }
+
+/*
+                        for(i=arrayProducto.length - 1; i>=0; i--){
+                            //arrayProducto[i].nodes = datos;
+                            childrens.push(arrayProducto[i]);
+                        }
+*/
+                        for(var j=0; j<2; j++) {
+                            parents.forEach(function (parent) {
+                                loopChildrens(childrens, parent, j);
+                            });
+                        }
+                        res.json(json);
+                    });
+                });
+
+            });
+        });
+    });
 };

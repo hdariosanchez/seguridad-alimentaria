@@ -77,9 +77,9 @@ exports.db_get_listado_activo = function(cb) {
 // inserta un nuevo elemento en la tabla encuesta
 exports.db_insertar = function(encuestaNueva, cb) {
     var insertado = true;
-    client.query("INSERT INTO encuesta (int_numero, str_titulo, str_descripcion, str_objetivo, str_destinado_a, str_instrucciones, dt_fecha_creacion, dt_fecha_modificacion) "
-        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
-        [encuestaNueva.int_numero, encuestaNueva.str_titulo, encuestaNueva.str_descripcion || null, encuestaNueva.str_objetivo || null, encuestaNueva.str_destinado_a || null, encuestaNueva.str_instrucciones || null, encuestaNueva.fechaCreacion || null, encuestaNueva.fechaModificacion || null])
+    client.query("INSERT INTO encuesta (int_numero, str_titulo, str_descripcion, str_objetivo, str_destinado_a, str_instrucciones, dt_fecha_creacion, dt_fecha_modificacion, str_estado) "
+        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
+        [encuestaNueva.int_numero, encuestaNueva.str_titulo, encuestaNueva.str_descripcion || null, encuestaNueva.str_objetivo || null, encuestaNueva.str_destinado_a || null, encuestaNueva.str_instrucciones || null, encuestaNueva.fechaCreacion || null, encuestaNueva.fechaModificacion || null, 'PENDIENTE'])
         .on('error', function(err) {
             insertado = false;
             console.log('Error: SQL error model_encuesta / db_insertar : ' + inspect(err));

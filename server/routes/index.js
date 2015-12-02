@@ -45,9 +45,11 @@ router.get('/user/admin/variable', model_variable.getlistadoVariable);
 router.post('/user/admin/variable/guardar', model_variable.insertarVariable);
 router.get('/user/admin/variablePuro', model_variable.getlistado);
 router.post('/user/admin/variable/eliminar', model_variable.eliminar);
+router.post('/user/admin/variable/editar', model_variable.editarVarible);
 
 
-router.post('/user/admin/pregunta/guardar', model_pregunta.insertarPreguntas); //Ingreso de preguntas de la encuesta en gestion de preguntas!
+
+router.post('/user/admin/pregunta/guardar', model_pregunta.insertarPregunta); //Ingreso de preguntas de la encuesta en gestion de preguntas!
 //router.post('/user/admin/pregunta/guardar', model_pregunta.insertarPregunta); //Ingreso de pregunta idividual de la encuesta en gestion de preguntas!
 
 router.get('/user/canton', model_canton.getlistado);
@@ -66,9 +68,13 @@ router.get('/user/admin/frecuencia', model_frecuencia.getlistado);
 router.post('/user/admin/producto/guardar', model_producto.insertarProducto);
 router.post('/user/admin/producto/eliminar', model_producto.eliminar);
 
-
 router.post('/user/admin/solicitudes/actualizar', model_solicitud.db_actualizar);
-//'/api/user/admin/solicitudes/actualizar'
 
+router.get('/user/admin/herramienta/pregunta', model_vistaEncuesta.getlistadopregunta);
+
+router.post('/user/admin/pregunta/eliminar', model_pregunta.eliminarPreguntaAdmin);
+
+//Guardar pregunta de tipo matriz
+//router.post('/user/admin/matriz/guardar', model_pregunta.insertarPregunta());
 
 module.exports = router;

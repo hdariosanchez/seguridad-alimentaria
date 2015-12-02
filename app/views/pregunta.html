@@ -1,331 +1,385 @@
 
 <div class="container-fluid">
-  <!--Encabezado (Datos generales de la encuesta)-->
   <div class="row">
-    <div class="modal-header">
-      <h4 class="text-center modal-title"><strong>{{encuesta.str_titulo}}</strong></h4>
-      <p class="text-center modal-title"><strong>Objetivo:</strong>  {{encuesta.str_objetivo}}</p>
-      <p class="text-center modal-title">Encuesta No. {{encuesta.int_numero}}</p>
-    </div><!--.modal-body
-    <p class="text-left"><strong>  Descripción:</strong>  {{encuesta.str_descripcion}}</p>
-    <p class="text-left"><strong>  Destinado a:</strong>  {{encuesta.str_destinado_a}}</p>
-    <p class="text-left modal-title"><strong>  Instrucciones:</strong>  {{encuesta.srt_instrucciones}}</p>
-    <p class="text-left"><strong>  Fecha de creación:</strong>  {{encuesta.dt_fecha_creacion}}</p>
-    <p class="text-left"><strong>Estado:</strong>  {{encuesta.str_estado}}</p>-->
-    <div class="modal-footer"></div>
-  </div>
-  <!--Vista de las preguntas guardadas-->
-  <div class="row">
-    <div class="col-md-4">
-      <div class="mygrid-wrapper-div">
-        <div ng-show="true" class="check-element animate-show">
-          <div class="thumbnail">
+    <div class="col-md-10 col-md-offset-1">
+      <div ng-show="true" class="check-element animate-show">
+        <div class="thumbnail">
+          <div style="height: 350px; border-style: none" class="mygrid-wrapper-div">
             <div class="modal-header">
-              <h4 class="text-center modal-title"><strong>PREGUNTAS GENERADAS</strong></h4>
+              <h4 class="text-center modal-title"><strong>{{encuesta.str_titulo}}</strong></h4>
+              <p class="text-center modal-title"><strong>Objetivo:</strong>  {{encuesta.str_objetivo}}</p>
+              <p class="text-center modal-title">Encuesta No. {{encuesta.int_numero}}</p>
             </div>
             <div class="modal-body">
-              <script type="text/ng-template" id="nodes_renderer.html">
-                <section id="{{variableSeleccionada}}" ng-if="node.int_id_variable == variableSeleccionada">
-                  <div ng-class="{'panel panel-default': node.nodes &amp;&amp; node.nodes.length &gt; 0}">
-                    <div ng-if="node.nodes &amp;&amp; node.nodes.length &gt; 0" ui-tree-handle="" class="panel-heading"> {{node.str_enunciado}}<a data-nodrag="" ng-click="eliminarElemento(node)" class="pull-right btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a><a title="Editar Pregunta" data-nodrag="" data-toggle="modal" data-target="#editarPreguntaModal" ng-click="editarPregunta(node)" style="margin-right: 8px;" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-edit"></span></a></div>
-                  </div>
-                  <div ng-if="node.nodes &amp;&amp; node.nodes.length == 0">
-                    <input type="{{node.type}}" name="{{node.codigo}}" value="{{node.codigo}}" ng-if="node.type == 'checkbox' || node.type == 'radio'"/>
-                    <input type="{{node.type}}" name="{{node.codigo}}" ng-if="node.type == 'text'" class="form-control input-sm"/>
-                    <input type="{{node.type}}" min="{{rango.minimo}}" max="{{rango.maximo}}" ng-model="dato.valor" step="1" ng-if="node.type == 'range'" class="input-lg"/>
-                    <input type="{{node.type}}" ng-model="dato.valor" ng-if="node.type == 'date'" class="form-control input-sm"/>
-                    <input type="{{node.type}}" ng-if="node.type == 'time'" class="form-control input-sm"/> {{node.str_descripcion}} {{node.cuales}}
-                    <input type="text" ng-if="node.otros == true"/>
-                    <p class="pull-right">{{node.str_desc_fin}}</p>
-                  </div>
-                  <div ng-if="node.nodes.length == 0 &amp;&amp; node.productos.length &gt; 0">
-                    <table class="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <td><strong>N°</strong></td>
-                          <td><strong>PRODUCTO</strong></td>
-                          <td><strong>COSTO</strong></td>
-                          <td><strong>PESO</strong></td>
-                          <td><strong>FRECUENCIA</strong></td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr ng-repeat="producto in node.productos">
-                          <td>{{$index + 1}}</td>
-                          <td>{{producto.str_descripcion}}</td>
-                          <td>
-                            <input type="number" ng-model="producto.flt_costo" ng-value="producto.flt_costo" class="form-control"/>
-                          </td>
-                          <td>
-                            <input type="number" ng-model="producto.flt_peso" ng-value="producto.flt_peso" class="form-control"/>
-                          </td>
-                          <td>
-                            <ul class="text-inline">
-                              <li ng-repeat="frecuencia in producto.frecuencia">
-                                <input type="radio" name="{{node.codigo + producto.int_id}}" ng-model="frecuencia.respuesta" ng-change=""/>{{frecuencia.str_descripcion}}
-                              </li>
-                            </ul>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
-                <ol ng-model="node.nodes">
-                  <li ng-repeat="node in node.nodes" ng-include="'nodes_renderer.html'"></li>
+              <script type="text/ng-template" id="nodes_renderer.html"><small class="pull-right">{{node.str_descripcion_variable}}</small>
+                <div ng-if="node.nodes &amp;&amp; node.int_id_padre == null"><strong>{{$index + 1}}) &nbsp</strong><span ng-if="node.int_obligatoria == 1" style="color: red">* &nbsp</span><strong>{{node.str_enunciado}}</strong><a title="Eliminar pregunta" ng-click="eliminarElemento(node)" class="pull-right btn btn-xs"><span id="enlaceRojo">&nbsp;<small>Eliminar</small></span></a><a title="Editar pregunta" data-nodrag="" data-toggle="modal" data-target="#editarPreguntaModal" ng-click="editarPregunta(node)" style="margin-right: 8px;" class="pull-right btn btn-xs"><span id="enlaceAzul">&nbsp;<small>Editar</small></span></a></div>
+                <div ng-if="node.nodes.length == 0">
+                  <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" ng-value="node.int_id" ng-if="node.int_id_tipo_pregunta == 'radio'" ng-model="node.respuesta" ng-change="trueFalse(node)"/>
+                  <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.int_id_tipo_pregunta == 'checkbox'" ng-model="node.respuesta"/>
+                  <textarea rows="2" cols="65" ng-model="node.respuesta" ng-if="node.int_id_tipo_pregunta == 'text'" class="form-control"></textarea>
+                  <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'time'" ng-model="node.respuesta" class="form-control"/>
+                  <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'date'" ng-model="node.respuesta" class="form-control"/>
+                  <input type="{{node.int_id_tipo_pregunta}}" min="{{node.int_inicio}}" max="{{node.int_fin}}" step="1" ng-if="node.int_id_tipo_pregunta == 'range'" ng-model="node.respuesta" class="form-control input-lg"/>
+                  <!--a.pull-right.btn.btn-clipboard.btn-xs(title="Editar", data-toggle='modal', data-target='#editarProductoModal', data-nodrag="",-->
+                  <!--ng-click="tester(node)", style="margin-right: 8px;")-->
+                  <!--    span.glyphicon.glyphicon-pencil(aria-hidden='true')-->{{node.str_descripcion}} {{node.str_desc_campo}} {{node.cuales}}
+                  <input type="text" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.str_desc_campo || node.otros" ng-model="node.respuestaOtros"/>
+                  <p class="pull-left">{{node.str_desc_inicio}} {{node.int_inicio}}</p>
+                  <p class="pull-right">{{node.str_desc_fin}} {{node.int_fin}}</p><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+                  <p ng-if="node.int_id_tipo_pregunta == 'range'"><strong>Su respuesta: {{node.respuesta}}</strong></p><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+                </div>
+                <div ng-if="node.nodes &amp;&amp; node.nodes[0].nodes.length &gt; 0">
+                  <table class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <td style="width: 5%; text-align:'center'"><strong>N°</strong></td>
+                        <td style="width: 25%"><strong>PRODUCTO</strong></td>
+                        <td style="width: 15%"><strong>COSTO</strong></td>
+                        <td style="width: 15%"><strong>PESO</strong></td>
+                        <td style="width: 40%; align = center"><strong>FRECUENCIA</strong></td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="producto in node.nodes">
+                        <td style="width: 5%">{{$index + 1}}</td>
+                        <td style="width: 25%">{{producto.str_descripcion}}</td>
+                        <td style="width: 15%">
+                          <input type="number" ng-model="producto.flt_costo" ng-value="producto.flt_costo" class="form-control"/>
+                        </td>
+                        <td style="width: 15%">
+                          <input type="number" ng-model="producto.flt_peso" ng-value="producto.flt_peso" class="form-control"/>
+                        </td>
+                        <td style="width: 40%">
+                          <label ng-repeat="frecuencia in producto.nodes" class="radio-inline">
+                            <input type="radio" name="{{node.codigo + producto.int_id}}" ng-model="frecuencia.respuesta" ng-value="frecuencia.int_id" ng-change="trueFalseFrecuencia(producto.nodes, frecuencia)"/>{{frecuencia.str_descripcion}}
+                          </label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                  <li ng-repeat="node in node.nodes | orderBy:'int_id'" ng-include="'nodes_renderer.html'">,</li>
                 </ol>
               </script>
-              <ol ng-model="data">
-                <li ng-repeat="node in listadoPregunta" ng-include="'nodes_renderer.html'" ng-if="node.int_id_variable == variableSeleccionada"></li>
-              </ol>
+              <div id="tree-root" ui-tree="" data-drag-enabled="false">
+                <ol ui-tree-nodes="" ng-model="listadoPregunta">
+                  <li ng-repeat="node in listadoPregunta | orderBy:'str_descripcion_variable'" ui-tree-node="" ng-include="'nodes_renderer.html'"></li>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-8">
-      <!--Variables e ingreso de preguntas-->
-      <div class="row">
-        <!--Visualización de variables-->
-        <div class="col-sm-4">
-          <div class="thumbnail">
-            <div class="input-group">
-              <div class="modal-header">
-                <h4 class="text-center modal-title"><strong>VARIABLES</strong></h4>
-              </div>
-              <div class="modal-body">
-                <ul ng-model="listadoVariable">
-                  <li type="none" ng-repeat="node in listadoVariable" ng-include="'variable_renderer.html'"></li>
-                </ul>
-              </div>
-              <!--script para obtener variables con recursividad-->
-              <script type="text/ng-template" id="variable_renderer.html"><a href="" title="" ng-click="asignarVariable(node)" style="font-size:12px color:black" class="pull-left">{{node.str_descripcion}}</a>
-                <ul ng-model="node.nodes" ng-class="{hidden: collapsed}">
-                  <li type="none" ng-repeat="node in node.nodes" ng-include="'variable_renderer.html'"></li>
-                </ul>
-              </script>
-            </div>
+  </div>
+  <!--Variables e ingreso de preguntas-->
+  <div class="row">
+    <!--Visualización de variables-->
+    <div class="col-sm-4">
+      <div class="thumbnail">
+        <div class="input-group">
+          <div class="modal-header">
+            <h4 class="text-center modal-title"><strong>VARIABLES</strong></h4>
+          </div>
+          <div class="modal-body">
+            <ul ng-model="listadoVariable">
+              <li type="none" ng-repeat="node in listadoVariable" ng-include="'variable_renderer.html'"></li>
+            </ul>
+          </div>
+          <!--script para obtener variables con recursividad-->
+          <script type="text/ng-template" id="variable_renderer.html"><a href="" title="" ng-click="asignarVariable(node)" style="font-size:12px color:black" class="pull-left">{{node.str_descripcion}}</a>
+            <ul ng-model="node.nodes" ng-class="{hidden: collapsed}">
+              <li type="none" ng-repeat="node in node.nodes" ng-include="'variable_renderer.html'"></li>
+            </ul>
+          </script>
+        </div>
+      </div>
+    </div>
+    <!--Gestión de preguntas-->
+    <div class="col-sm-8">
+      <div class="thumbnail">
+        <!--Mensaje que se muestra antes de seleccionar una variable-->
+        <div ng-hide="visibleAnuncio" class="check-element animate-show">
+          <div class="modal-header">
+            <h4 class="text-center modal-title"><strong>GESTIÓN DE PREGUNTAS</strong></h4>
+          </div>
+          <div class="modal-body">
+            <p class="modal-title">Por favor seleccione una variable para empezar.</p>
+            <p class="modal-title">La variable seleccionada se vinculará con la pregunta.</p>
           </div>
         </div>
-        <!--Gestión de preguntas-->
-        <div class="col-sm-8">
-          <div class="thumbnail">
-            <!--Mensaje que se muestra antes de seleccionar una variable-->
-            <div ng-hide="visibleAnuncio" class="check-element animate-show">
-              <div class="modal-header">
-                <h4 class="text-center modal-title"><strong>GESTIÓN DE PREGUNTAS</strong></h4>
+        <!--Panel de gestión de preguntas-->
+        <div ng-show="visiblePregunta" class="check-element animate-show">
+          <div class="modal-header">
+            <h4 class="text-center modal-title"><strong>GESTIÓN DE PREGUNTAS</strong></h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <h5 class="text-left modal-title"><strong>VARIABLE:</strong>  {{variableSeleccion.str_nombre}}</h5>
               </div>
-              <div class="modal-body">
-                <p class="modal-title">Por favor seleccione una variable para empezar.</p>
-                <p class="modal-title">La variable seleccionada se vinculará con la pregunta.</p>
-              </div>
-            </div>
-            <!--Panel de gestión de preguntas-->
-            <div ng-show="visiblePregunta" class="check-element animate-show">
-              <div class="modal-header">
-                <h4 class="text-center modal-title"><strong>GESTIÓN DE PREGUNTAS</strong></h4>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <h5 class="text-left modal-title"><strong>VARIABLE:</strong>  {{variableSeleccion.str_nombre}}</h5>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="input-group">
-                      <div class="input-group-addon">Tipo de pregunta</div>
-                      <select ng-model="respuesta.tipoRespuesta" ng-options="tipo as tipo.descripcion for tipo in objTipoPregunta" id="tipoRespuesta" class="form-control">
-                        <option value="">Ninguno</option>
-                      </select>
-                    </div>
-                  </div>
+              <div class="col-sm-6">
+                <div class="input-group">
+                  <div class="input-group-addon">Tipo de pregunta</div>
+                  <select ng-model="respuesta.tipoRespuesta" ng-options="tipo as tipo.descripcion for tipo in objTipoPregunta" id="tipoRespuesta" class="form-control">
+                    <option value="">Ninguno</option>
+                  </select>
                 </div>
               </div>
-              <div class="modal-footer">
-                <div id="SubIngreso" class="panel panel-default">
-                  <div class="panel-heading">
-                    <div class="row">
-                      <div class="col-sm-12">
-                        <div class="input-group">
-                          <div class="input-group-addon">Enunciado</div>
-                          <input id="textinput" ng-model="pregunta.descripcionPregunta" placeholder="Ingrese el enunciado de la pregunta" class="form-control input-md"/>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row"><br/>
-                      <div class="col-sm-12">
-                        <div class="input-group">
-                          <div class="input-group-addon">Ayuda</div>
-                          <input id="textinput" ng-model="pregunta.ayudaPregunta" placeholder="Inserte una ayuda de ser necesario" class="form-control input-sm"/>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row"><br/>
-                      <div class="col-sm-3">
-                        <div class="input-group">
-                          <input id="inputSexo" type="checkbox" ng-model="pregunta.obligatoriedadPregunta" class="input-sm"/>&nbsp ¿Obligatoria?
-                        </div>
-                      </div>
-                      <div class="col-sm-5 col-sm-offset-4">
-                        <div class="input-group">
-                          <div class="input-group-addon">Código</div>
-                          <input type="text" placeholder="Código de pregunta" ng-model="pregunta.codigoPregunta" required="" class="form-control input-sm"/>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="panel-body">
-                    <div class="modal-body">
-                      <form id="formPregunta" data-toggle="validator" role="form" class="form-horizontal">
-                        <ul ng-repeat="opcionRespuesta in arrayListaRespuesta">
-                          <!--Pregunta de Selección simple-->
-                          <div ng-if="respuesta.tipoRespuesta.type == 'radio'" class="form-group">
-                            <div class="row">
-                              <div class="col-sm-1">
-                                <h5 id="enlaceGris" editable-text="opcionRespuesta.numEscala" placeholder="Tabular" on-change="validate(value)"></h5>
-                              </div>
-                              <div class="col-sm-1">
-                                <input type="radio" name="{{pregunta.codigoPregunta}}" ng-value="opcionRespuesta.numEscala" ng-model="respuesta.correcta"/>
-                              </div>
-                              <div class="col-sm-4">
-                                <input id="textinput" ng-model="opcionRespuesta.str_descripcion" required="" class="form-control input-md"/>
-                              </div>
-                              <div class="col-sm-4">
-                                <input id="textinput" ng-model="opcionRespuesta.cuales" required="" ng-if="opcionRespuesta.otros == true" class="form-control input-md"/>
-                              </div>
-                              <div class="col-sm-1"><a title="addRespuesta" ng-click="addOpcionRespuesta(respuesta)" ng-if="respuesta.tipoRespuesta.value == 2" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-plus"></span></a></div>
-                              <div class="col-sm-1"><a title="eliminarRespuesta" ng-click="eliminarRespuesta(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 2" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-trash"></span></a></div>
-                              <div class="col-sm-1"><a title="addExtra" ng-click="agregarOtros(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 2" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></div>
-                            </div>
-                          </div>
-                          <!--Pregunta de selección múltiple-->
-                          <div ng-if="respuesta.tipoRespuesta.type == 'checkbox'" class="form-group">
-                            <div class="row">
-                              <div class="col-sm-1">
-                                <h5 editable-text="opcionRespuesta.numEscala" placeholder="Tabular" on-change="validate(value)"></h5>
-                              </div>
-                              <div class="col-sm-1">
-                                <input type="checkbox" ng-model="opcionRespuesta.valor"/>
-                              </div>
-                              <div class="col-sm-4">
-                                <input id="textinput" ng-model="opcionRespuesta.str_descripcion" required="" class="form-control input-md"/>
-                              </div>
-                              <div class="col-sm-4">
-                                <input id="textinput" ng-model="opcionRespuesta.cuales" required="" ng-if="opcionRespuesta.otros == true" class="form-control input-md"/>
-                              </div>
-                              <div class="col-sm-1"><a title="addRespuesta" ng-click="addOpcionRespuesta(respuesta)" ng-if="respuesta.tipoRespuesta.value == 1" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-plus"></span></a></div>
-                              <div class="col-sm-1"><a title="eliminarRespuesta" ng-click="eliminarRespuesta(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 1" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-trash"></span></a></div>
-                              <div class="col-sm-1"><a title="addExtra" ng-click="agregarOtros(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 1" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></div>
-                            </div>
-                          </div>
-                          <!--Pregunta tipo rango-->
-                          <div ng-if="respuesta.tipoRespuesta.type == 'range'" class="form-group">
-                            <div class="row">
-                              <div class="col-sm-3">
-                                <div class="input-group">
-                                  <div class="input-group-addon">Mínimo</div>
-                                  <input type="number" name="numMinimo" ng-model="rango.minimo" min="0" max="99" step="1" placeholder="" maxlength="2" required="" class="form-control"/>
-                                </div>
-                              </div>
-                              <div class="col-sm-3 col-sm-offset-1">
-                                <div class="thumbnail">
-                                  <h6 class="text-center modal-title"><strong>
-                                      Valor seleccionado:
-                                      {{opcionRespuesta.valor}}</strong></h6>
-                                </div>
-                              </div>
-                              <div class="col-sm-3 col-sm-offset-1">
-                                <div class="input-group">
-                                  <div class="input-group-addon">Máximo</div>
-                                  <input type="number" name="numMaximo" ng-model="rango.maximo" min="0" max="99" step="1" placeholder="" maxlength="2" required="" class="form-control"/>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-sm-11">
-                                <input type="range" min="{{rango.minimo}}" max="{{rango.maximo}}" ng-model="opcionRespuesta.valor" step="1" class="input-lg"/>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-sm-4">
-                                <input id="textinput" ng-model="opcionRespuesta.str_descripcion" placeholder="Descripción inicial" required="" class="form-control input-md"/>
-                              </div>
-                              <div class="col-sm-4 col-sm-offset-3">
-                                <input id="textinput" ng-model="opcionRespuesta.str_desc_fin" placeholder="Descripción final" required="" class="form-control input-md"/>
-                              </div>
-                            </div>
-                          </div>
-                          <!--Pregunta tipo fecha-->
-                          <div ng-if="respuesta.tipoRespuesta.type == 'date'" class="form-group">
-                            <div class="row">
-                              <div class="col-sm-3">
-                                <div class="input-group">
-                                  <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
-                                  <input type="date" disabled="disabled" class="form-control"/>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <!--Pregunta tipo hora-->
-                          <div ng-if="respuesta.tipoRespuesta.type == 'time'" class="form-group">
-                            <div class="row">
-                              <div class="col-sm-3">
-                                <div class="input-group">
-                                  <div class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i></div>
-                                  <input type="time" disabled="disabled" class="form-control"/>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <!--Pregunta tipo texto-->
-                          <div ng-if="respuesta.tipoRespuesta.type == 'text'" class="form-group">
-                            <div class="row">
-                              <div class="col-sm-11">
-                                <div class="input-group">
-                                  <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
-                                  <input type="text" disabled="disabled" class="form-control"/>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <!--Pregunta tipo canasta-->
-                          <div ng-if="respuesta.tipoRespuesta.type == 'canasta'" class="form-group">
-                            <div class="form-group">
-                              <h4 class="modal-title text-left">Frecuencia</h4>
-                              <ul ng-model="listadoFrecuencia" class="list-inline">
-                                <li type="none" ng-repeat="frecuencia in listadoFrecuencia" class="pull-left">
-                                  <input type="checkbox" ng-model="frecuencia.respuesta" name="frecuencia" value="frecuencia.str_descripcion"/>&nbsp;&nbsp;{{frecuencia.str_descripcion}}
-                                </li>
-                              </ul>
-                            </div>
-                            <div class="form-group">
-                              <h4 class="modal-title text-center">Productos</h4>
-                              <script type="text/ng-template" id="nodes_render.html">
-                                <div class="tree-node tree-node-content bs-callout text-left"><a ng-if="node.nodes &amp;&amp; node.nodes.length &gt; 0" data-nodrag="" ng-click="toggle(this)" class="btn btn-clipboard btn-xs"><span ng-class="{'glyphicon glyphicon-triangle-right': collapsed, 'glyphicon glyphicon-triangle-bottom': !collapsed}" class="glyphicon"></span></a><span ng-if="node.nodes &amp;&amp; node.nodes.length == 0" data-nodrag="" ng-click="toggle(this)">&nbsp</span>
-                                  <input type="checkbox" value="{{node.int_id}}" ng-model="node.respuesta" ng-change="seleccionCheckBox(this)"/>&nbsp; {{node.str_descripcion}}
-                                </div>
-                                <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
-                                  <li ng-repeat="node in node.nodes" ui-tree-node="" ng-include="'nodes_render.html'"></li>
-                                </ol>
-                              </script>
-                              <div id="tree-root" ui-tree="" data-drag-enabled="false">
-                                <ol ui-tree-nodes="" ng-model="arbolProducto">
-                                  <li ng-repeat="node in arbolProducto" ui-tree-node="" ng-include="'nodes_render.html'"></li>
-                                </ol>
-                              </div>
-                            </div>
-                          </div>
-                        </ul>
-                      </form>
-                    </div>
-                  </div>
-                  <div class="panel-footer">
-                    <button type="button" data-toggle="" data-target="" ng-click="guardarPregunta(pregunta)" class="btn btn-primary pull-center">Agregar</button>
-                  </div>
-                </div>
-              </div>
-              <button type="button" data-toggle="" data-target="" ng-click="guardar()" class="btn btn-primary pull-center">Guardar todo</button>
             </div>
           </div>
+          <div class="modal-footer">
+            <div id="SubIngreso" class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="input-group">
+                      <div class="input-group-addon">Enunciado</div>
+                      <input id="textinput" ng-model="pregunta.descripcionPregunta" placeholder="Ingrese el enunciado de la pregunta" class="form-control input-md"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row"><br/>
+                  <div class="col-sm-12">
+                    <div class="input-group">
+                      <div class="input-group-addon">Ayuda</div>
+                      <input id="textinput" ng-model="pregunta.ayudaPregunta" placeholder="Inserte una ayuda de ser necesario" class="form-control input-sm"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row"><br/>
+                  <div class="col-sm-3">
+                    <div class="input-group">
+                      <input id="inputSexo" type="checkbox" ng-model="pregunta.obligatoriedadPregunta" class="input-sm"/>&nbsp ¿Obligatoria?
+                    </div>
+                  </div>
+                  <div class="col-sm-5 col-sm-offset-4">
+                    <div class="input-group">
+                      <div class="input-group-addon">Código</div>
+                      <input type="text" placeholder="Código de pregunta" ng-model="pregunta.codigoPregunta" required="" class="form-control input-sm"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="modal-body">
+                  <form id="formPregunta" data-toggle="validator" role="form" class="form-horizontal">
+                    <ul ng-repeat="opcionRespuesta in arrayListaRespuesta">
+                      <!--Pregunta de Selección simple-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'radio'" class="form-group">
+                        <div class="row">
+                          <div class="col-sm-1">
+                            <h5 id="enlaceGris" editable-text="opcionRespuesta.numEscala" placeholder="Tabular" on-change="validate(value)"></h5>
+                          </div>
+                          <div class="col-sm-1">
+                            <input type="radio" name="{{pregunta.codigoPregunta}}" ng-value="opcionRespuesta.numEscala" ng-model="respuesta.correcta"/>
+                          </div>
+                          <div class="col-sm-4">
+                            <input id="textinput" ng-model="opcionRespuesta.str_descripcion" required="" class="form-control input-md"/>
+                          </div>
+                          <div class="col-sm-4">
+                            <input id="textinput" ng-model="opcionRespuesta.cuales" required="" ng-if="opcionRespuesta.otros == true" class="form-control input-md"/>
+                          </div>
+                          <div class="col-sm-1"><a title="addRespuesta" ng-click="addOpcionRespuesta(respuesta)" ng-if="respuesta.tipoRespuesta.value == 2" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-plus"></span></a></div>
+                          <div class="col-sm-1"><a title="eliminarRespuesta" ng-click="eliminarRespuesta(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 2" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-trash"></span></a></div>
+                          <div class="col-sm-1"><a title="addExtra" ng-click="agregarOtros(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 2" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></div>
+                        </div>
+                      </div>
+                      <!--Pregunta de selección múltiple-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'checkbox'" class="form-group">
+                        <div class="row">
+                          <div class="col-sm-1">
+                            <h5 editable-text="opcionRespuesta.numEscala" placeholder="Tabular" on-change="validate(value)"></h5>
+                          </div>
+                          <div class="col-sm-1">
+                            <input type="checkbox" ng-model="opcionRespuesta.valor"/>
+                          </div>
+                          <div class="col-sm-4">
+                            <input id="textinput" ng-model="opcionRespuesta.str_descripcion" required="" class="form-control input-md"/>
+                          </div>
+                          <div class="col-sm-4">
+                            <input id="textinput" ng-model="opcionRespuesta.cuales" required="" ng-if="opcionRespuesta.otros == true" class="form-control input-md"/>
+                          </div>
+                          <div class="col-sm-1"><a title="addRespuesta" ng-click="addOpcionRespuesta(respuesta)" ng-if="respuesta.tipoRespuesta.value == 1" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-plus"></span></a></div>
+                          <div class="col-sm-1"><a title="eliminarRespuesta" ng-click="eliminarRespuesta(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 1" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-trash"></span></a></div>
+                          <div class="col-sm-1"><a title="addExtra" ng-click="agregarOtros(opcionRespuesta)" ng-if="respuesta.tipoRespuesta.value == 1" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></div>
+                        </div>
+                      </div>
+                      <!--Pregunta tipo rango-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'range'" class="form-group">
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <div class="input-group">
+                              <div class="input-group-addon">Mínimo</div>
+                              <input type="number" name="numMinimo" ng-model="rango.minimo" min="0" max="99" step="1" placeholder="" maxlength="2" required="" class="form-control"/>
+                            </div>
+                          </div>
+                          <div class="col-sm-3 col-sm-offset-1">
+                            <div class="thumbnail">
+                              <h6 class="text-center modal-title"><strong>
+                                  Valor seleccionado:
+                                  {{opcionRespuesta.valor}}</strong></h6>
+                            </div>
+                          </div>
+                          <div class="col-sm-3 col-sm-offset-1">
+                            <div class="input-group">
+                              <div class="input-group-addon">Máximo</div>
+                              <input type="number" name="numMaximo" ng-model="rango.maximo" min="0" max="99" step="1" placeholder="" maxlength="2" required="" class="form-control"/>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-11">
+                            <input type="range" min="{{rango.minimo}}" max="{{rango.maximo}}" ng-model="opcionRespuesta.valor" step="1" class="input-lg"/>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <input id="textinput" ng-model="opcionRespuesta.str_descripcion" placeholder="Descripción inicial" required="" class="form-control input-md"/>
+                          </div>
+                          <div class="col-sm-4 col-sm-offset-3">
+                            <input id="textinput" ng-model="opcionRespuesta.str_desc_fin" placeholder="Descripción final" required="" class="form-control input-md"/>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Pregunta tipo fecha-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'date'" class="form-group">
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <div class="input-group">
+                              <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                              <input type="date" disabled="disabled" class="form-control"/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Pregunta tipo hora-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'time'" class="form-group">
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <div class="input-group">
+                              <div class="input-group-addon"><i class="glyphicon glyphicon-hourglass"></i></div>
+                              <input type="time" disabled="disabled" class="form-control"/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Pregunta tipo texto-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'text'" class="form-group">
+                        <div class="row">
+                          <div class="col-sm-11">
+                            <div class="input-group">
+                              <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                              <input type="text" disabled="disabled" class="form-control"/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Pregunta tipo canasta-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'canasta'" class="form-group">
+                        <div class="form-group">
+                          <h4 class="modal-title text-left">Frecuencia</h4>
+                          <ul ng-model="listadoFrecuencia" class="list-inline">
+                            <li type="none" ng-repeat="frecuencia in listadoFrecuencia" class="pull-left">
+                              <input type="checkbox" ng-model="frecuencia.respuesta" name="frecuencia" value="frecuencia.str_descripcion"/>&nbsp;&nbsp;{{frecuencia.str_descripcion}}
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="form-group">
+                          <h4 class="modal-title text-center">Productos</h4>
+                          <script type="text/ng-template" id="nodes_render.html">
+                            <div class="tree-node tree-node-content bs-callout text-left"><a ng-if="node.nodes &amp;&amp; node.nodes.length &gt; 0" data-nodrag="" ng-click="toggle(this)" class="btn btn-clipboard btn-xs"><span ng-class="{'glyphicon glyphicon-triangle-right': collapsed, 'glyphicon glyphicon-triangle-bottom': !collapsed}" class="glyphicon"></span></a><span ng-if="node.nodes &amp;&amp; node.nodes.length == 0" data-nodrag="" ng-click="toggle(this)">&nbsp</span>
+                              <input type="checkbox" value="{{node.int_id}}" ng-model="node.respuesta" ng-change="seleccionCheckBox(this)"/>&nbsp; {{node.str_descripcion}}
+                            </div>
+                            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                              <li ng-repeat="node in node.nodes" ui-tree-node="" ng-include="'nodes_render.html'"></li>
+                            </ol>
+                          </script>
+                          <div id="tree-root" ui-tree="" data-drag-enabled="false">
+                            <ol ui-tree-nodes="" ng-model="arbolProducto">
+                              <li ng-repeat="node in arbolProducto" ui-tree-node="" ng-include="'nodes_render.html'"></li>
+                            </ol>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Pregunta tipo Matriz-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'matriz'" class="form-group">
+                        <div class="row">
+                          <div aling="left" class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="panel panel-default">
+                              <div class="panel-heading"><strong>Columna:</strong>
+                                <input type="text" ng-model="columna.str_descripcionColumna" ng-required=""/><a href="" ng-click="agregarColumna(columna)"><span class="glyphicon glyphicon-plus"></span></a>
+                              </div>
+                              <div class="panel-body">
+                                <div ng-repeat="columna in listadoColumnas" class="row">
+                                  <div class="col-xs-6">
+                                    <h6 class="list-group-item-heading">{{columna.str_descripcion}}.<a href="" ng-click="eliminarColumna(columna)" class="btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-minus"></span></a></h6>
+                                  </div>
+                                  <div class="col-xs-6">
+                                    <div ng-repeat="tabu in columna.tabular" class="row">
+                                      <div class="col-md-8">
+                                        <h5 id="enlaceGris" editable-text="tabu.int_id" placeholder="Tabular" on-change="validate(value)" class="pull-left"></h5>
+                                        <input type="text" ng-model="tabu.str_descripcion" class="form-control input-xs"/>
+                                      </div>
+                                      <div class="col-md-4"><a ng-click="agregarTabular(columna, tabu)" ng-if="respuesta.tipoRespuesta.value == 8" class="pull-left btn btn-clipboard btn-xs">+</a><a ng-click="eliminarTabular(columna, tabu)" ng-if="respuesta.tipoRespuesta.value == 8" class="pull-left btn btn-clipboard btn-xs">-</a></div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div aling="left" class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="panel panel-default">
+                              <div class="panel-heading"><strong>Fila:</strong>
+                                <input type="text" ng-model="fila.str_descripcionFila" ng-required=""/><a href="" ng-click="agregarFila(fila)"><span class="glyphicon glyphicon-plus"></span></a>
+                              </div>
+                              <div class="panel-body">
+                                <ul type="none" id="materiaPreguntaAdmin">
+                                  <li type="none" ng-repeat="fila in listadoFila">
+                                    <h6 class="list-group-item-heading">{{fila.str_descripcion}}.</h6><a href="" ng-click="eliminarFila(fila)">-</a>
+                                    <ul type="none" ng-repeat="tabular in listaTabular">
+                                      <li>{{tabular.str_descripcion}}</li>
+                                    </ul>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Pregunta tipo Tabla-->
+                      <div ng-if="respuesta.tipoRespuesta.type == 'tabla'" class="form-group">
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="table-responsive">
+                              <table class="table">
+                                <thead>
+                                  <tr>
+                                    <td ng-repeat="enunciadoColumna in listadoColumnas"></td>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>{{enunciadoColumna.str_descripcion}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ul>
+                  </form>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <button type="button" ng-click="guardarPregunta(pregunta)" ng-if="respuesta.tipoRespuesta.type != 'matriz'" class="btn btn-primary pull-center">Agregar</button>
+                <button type="button" ng-click="guardarMatriz(pregunta)" ng-if="respuesta.tipoRespuesta.type == 'matriz'" class="btn btn-danger pull-center">Agregar</button>
+              </div>
+            </div>
+          </div>
+          <button type="button" data-toggle="" data-target="" ng-click="guardar()" class="btn btn-primary pull-center">Guardar todoa</button>
         </div>
       </div>
     </div>

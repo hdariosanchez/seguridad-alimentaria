@@ -1,119 +1,145 @@
 
 <div class="container">
-  <div ng-show="visible" class="animate-show">
-    <div class="modal-header">
-      <h1 id="myModalLabel">Edición de Encuestas</h1>
-      <p id="myNodalLabel">Seleccione la encuesta que desea editar.</p>
-    </div>
-    <div class="modal-body">
-      <div ng-grid="gridOptions" class="gridStyles"></div>
+  <div class="row">
+    <div align="center" class="col-xs-12 col-sm-12 col-md-12">
+      <legend>EDICIÓN DE ENCUESTA</legend>
     </div>
   </div>
-  <div ng-hide="visible" class="animate-show">
-    <div class="modal-header">
-      <button type="button" data-dismiss="modal" ng-click="mostrarTabla()" class="btn btn-primary pull-right">Mostrar encuestas</button>
-      <h1 id="myModalLabel">Editar Encuesta</h1>
-      <p id="myNodalLabel">Al editar la encuesta verifique que los campos requeridos estén con datos.</p>
-      <p id="myModalLabel">Los campos marcados con (<b style="color:red">*</b>) son requeridos.</p>
-      <div class="form-group text-right"><a type="button" href="#/" class="btn btn-default">Cancelar</a>
-        <button type="button" ng-click="editar(encuestaEditar)" ng-disabled="editarEncuestaModal.$invalid" class="btn btn-primary">Guardar</button>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+      <div ng-show="visible" class="animate-show">
+        <rd-widget>
+          <rd-widget-header icon="fa-calendar" title="Encuestas Pendientes"><a href="">Manage</a></rd-widget-header>
+          <div class="table-responsive">
+            <table class="tableCursoAsignatura table">
+              <thead>
+                <tr>
+                  <td><strong>Titulo</strong></td>
+                  <td><strong>Destinado A</strong></td>
+                  <td><strong>Fecha Creación</strong></td>
+                  <td><strong>Gestión</strong></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="encuesta in listadoEncuesta">
+                  <td>{{encuesta.str_titulo}}</td>
+                  <td>{{encuesta.str_destinado_a}}</td>
+                  <td>{{encuesta.dt_fecha_creacion}}</td>
+                  <td><a type="button" href="" ng-click="encuestaEdicion(encuesta)" class="btn btn-primary btn-xs">Editar</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </rd-widget>
+      </div>
+      <!--Seccion de la edicion de la ecuesta, enunciado y luego variable.-->
+      <div ng-hide="visible" class="animate-show">
+        <div class="modal-header">
+          <button type="button" data-dismiss="modal" ng-click="mostrarTabla()" class="btn btn-primary pull-right">Mostrar encuestas</button>
+          <p id="myNodalLabel">Al editar la encuesta verifique que los campos requeridos estén con datos.</p>
+          <p id="myModalLabel">Los campos marcados con (<b style="color:red">*</b>) son requeridos.</p>
+          <div class="form-group text-right"><a type="button" href="#/" class="btn btn-default">Cancelar</a>
+            <button type="button" ng-click="editar(encuestaEditar)" ng-disabled="editarEncuestaModal.$invalid" class="btn btn-primary">Guardar</button>
+            <button type="button" ng-click="visualizarModal()" class="btn btn-primary pull-left">Guardar para preguntas.</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form id="editarEncuestaModal" name="editarEncuestaModal" data-toggle="validator" role="form" class="form-horizontal">
+            <!--Input del int_numero de la Encuesta-->
+            <div ng-class="{'has-error': editarEncuestaModal.int_numero.$invalid &amp;&amp; editarEncuestaModal.int_numero.$touched}" class="form-group">
+              <label for="int_numero">Número<sup style="color:red"> *</sup></label>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                <input id="int_numero" type="text" name="int_numero" ng-model="encuestaEditar.int_numero" placeholder="Ingrese el número de encuesta. Ej: 123" maxlength="3" pattern="[-+]?[0-9]*" ng-required="true" class="form-control"/><span ng-if="editarEncuestaModal.int_numero.$invalid &amp;&amp; editarEncuestaModal.int_numero.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              </div><span ng-if="editarEncuestaModal.int_numero.$error.required &amp;&amp; editarEncuestaModal.int_numero.$touched" class="help-block">El campo es requerido</span><span ng-if="editarEncuestaModal.int_numero.$error.pattern &amp;&amp; editarEncuestaModal.int_numero.$dirty" class="help-block">Solo se acepta números. Ej:123</span>
+            </div>
+            <!--Input de la str_titulo de la Encuesta-->
+            <div ng-class="{'has-error': editarEncuestaModal.str_titulo.$invalid &amp;&amp; editarEncuestaModal.str_titulo.$touched }" class="form-group">
+              <label for="str_titulo">Título<sup style="color:red"> *</sup></label>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                <input id="str_titulo" type="text" name="str_titulo" ng-model="encuestaEditar.str_titulo" placeholder="Ingrese el título" maxlength="300" ng-required="true" class="form-control"/><span ng-if="editarEncuestaModal.str_titulo.$invalid &amp;&amp; editarEncuestaModal.str_titulo.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              </div><span ng-if="editarEncuestaModal.str_titulo.$error.required &amp;&amp; editarEncuestaModal.str_titulo.$touched" class="help-block">El campo es requerido</span>
+            </div>
+            <!--Input de la str_descripcion de la Encuesta-->
+            <div class="form-group">
+              <label for="str_descripcion">Descripción</label>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                <input id="str_descripcion" type="text" name="str_descripcion" ng-model="encuestaEditar.str_descripcion" placeholder="Ingrese la descripción" maxlength="600" class="form-control"/>
+              </div>
+            </div>
+            <!--Input de la str_objetivo de la Encuesta-->
+            <div class="form-group">
+              <label for="str_objetivo">Objetivo</label>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                <input id="str_objetivo" type="text" name="str_objetivo" ng-model="encuestaEditar.str_objetivo" placeholder="Ingrese el objetivo" maxlength="400" class="form-control"/>
+              </div>
+            </div>
+            <!--Input de la destinado a de la Encuesta-->
+            <div class="form-group">
+              <label for="str_destinado_a">Destinatario</label>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                <input id="str_destinado_a" type="text" name="str_destinado_a" ng-model="encuestaEditar.str_destinado_a" placeholder="Ingrese el destinatario" maxlength="300" class="form-control"/>
+              </div>
+            </div>
+            <!--Input de la str_instrucciones de la Encuesta-->
+            <div class="form-group">
+              <label for="str_instrucciones">Instrucciones</label>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
+                <textarea id="str_instrucciones" type="text" name="str_instrucciones" ng-model="encuestaEditar.str_instrucciones" placeholder="Ingrese instrucciones" maxlength="1200" rows="3" class="form-control"></textarea>
+              </div>
+            </div>
+            <!--Input de la dt_fecha_modificacion-->
+            <div class="form-group">
+              <label for="fechaModificacion">Fecha de modificación</label>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+                <input id="dt_fecha_modificacion" type="date" name="dt_fecha_modificacion" ng-model="encuestaEditar.dt_fecha_modificacion" placeholder="Descripción o nombre del producto" maxlength="40" readonly="readonly" class="form-control"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="modal-header">
+                <h4 class="modal-title">Variables disponibles</h4>
+                <p class="modal-title">Seleccione las variables que desea asignar a la encuesta.</p>
+              </div>
+              <div class="modal-body">
+                <script type="text/ng-template" id="nodes_render.html">
+                  <div class="tree-node tree-node-content bs-callout"><a ng-if="node.nodes &amp;&amp; node.nodes.length &gt; 0" data-nodrag="" ng-click="toggle(this)" class="btn btn-clipboard btn-xs"><span id="enlaceGris" ng-class="{'glyphicon glyphicon-triangle-right': collapsed, 'glyphicon glyphicon-triangle-bottom': !collapsed}" class="glyphicon"></span></a><span ng-if="node.nodes &amp;&amp; node.nodes.length == 0" data-nodrag="" ng-click="toggle(this)">&nbsp</span>
+                    <input type="checkbox" value="{{node.id}}" ng-model="node.respuesta" ng-change="newSubItem(this)"/> {{node.title}}
+                  </div>
+                  <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="node in node.nodes" ui-tree-node="" ng-include="'nodes_render.html'"></li>
+                  </ol>
+                </script>
+                <div id="tree-root" ui-tree="" data-drag-enabled="false">
+                  <ol ui-tree-nodes="" ng-model="data">
+                    <li ng-repeat="node in data" ui-tree-node="" ng-include="'nodes_render.html'"></li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-    <div class="modal-body">
-      <form id="editarEncuestaModal" name="editarEncuestaModal" data-toggle="validator" role="form" class="form-horizontal">
-        <!--Input del int_numero de la Encuesta-->
-        <div ng-class="{'has-error': editarEncuestaModal.int_numero.$invalid &amp;&amp; editarEncuestaModal.int_numero.$touched}" class="form-group">
-          <label for="int_numero">Número<sup style="color:red"> *</sup></label>
-          <div class="input-group">
-            <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
-            <input id="int_numero" type="text" name="int_numero" ng-model="encuestaEditar.int_numero" placeholder="Ingrese el número de encuesta. Ej: 123" maxlength="3" pattern="[-+]?[0-9]*" ng-required="true" class="form-control"/><span ng-if="editarEncuestaModal.int_numero.$invalid &amp;&amp; editarEncuestaModal.int_numero.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
-          </div><span ng-if="editarEncuestaModal.int_numero.$error.required &amp;&amp; editarEncuestaModal.int_numero.$touched" class="help-block">El campo es requerido</span><span ng-if="editarEncuestaModal.int_numero.$error.pattern &amp;&amp; editarEncuestaModal.int_numero.$dirty" class="help-block">Solo se acepta números. Ej:123</span>
-        </div>
-        <!--Input de la str_titulo de la Encuesta-->
-        <div ng-class="{'has-error': editarEncuestaModal.str_titulo.$invalid &amp;&amp; editarEncuestaModal.str_titulo.$touched }" class="form-group">
-          <label for="str_titulo">Título<sup style="color:red"> *</sup></label>
-          <div class="input-group">
-            <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
-            <input id="str_titulo" type="text" name="str_titulo" ng-model="encuestaEditar.str_titulo" placeholder="Ingrese el título" maxlength="300" ng-required="true" class="form-control"/><span ng-if="editarEncuestaModal.str_titulo.$invalid &amp;&amp; editarEncuestaModal.str_titulo.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
-          </div><span ng-if="editarEncuestaModal.str_titulo.$error.required &amp;&amp; editarEncuestaModal.str_titulo.$touched" class="help-block">El campo es requerido</span>
-        </div>
-        <!--Input de la str_descripcion de la Encuesta-->
-        <div class="form-group">
-          <label for="str_descripcion">Descripción</label>
-          <div class="input-group">
-            <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
-            <input id="str_descripcion" type="text" name="str_descripcion" ng-model="encuestaEditar.str_descripcion" placeholder="Ingrese la descripción" maxlength="600" class="form-control"/>
-          </div>
-        </div>
-        <!--Input de la str_objetivo de la Encuesta-->
-        <div class="form-group">
-          <label for="str_objetivo">Objetivo</label>
-          <div class="input-group">
-            <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
-            <input id="str_objetivo" type="text" name="str_objetivo" ng-model="encuestaEditar.str_objetivo" placeholder="Ingrese el objetivo" maxlength="400" class="form-control"/>
-          </div>
-        </div>
-        <!--Input de la destinado a de la Encuesta-->
-        <div class="form-group">
-          <label for="str_destinado_a">Destinatario</label>
-          <div class="input-group">
-            <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
-            <input id="str_destinado_a" type="text" name="str_destinado_a" ng-model="encuestaEditar.str_destinado_a" placeholder="Ingrese el destinatario" maxlength="300" class="form-control"/>
-          </div>
-        </div>
-        <!--Input de la str_instrucciones de la Encuesta-->
-        <div class="form-group">
-          <label for="str_instrucciones">Instrucciones</label>
-          <div class="input-group">
-            <div class="input-group-addon"><i class="glyphicon glyphicon-tag"></i></div>
-            <textarea id="str_instrucciones" type="text" name="str_instrucciones" ng-model="encuestaEditar.str_instrucciones" placeholder="Ingrese instrucciones" maxlength="1200" rows="3" class="form-control"></textarea>
-          </div>
-        </div>
-        <!--Input de la dt_fecha_modificacion-->
-        <div class="form-group">
-          <label for="fechaModificacion">Fecha de modificación</label>
-          <div class="input-group">
-            <div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
-            <input id="dt_fecha_modificacion" type="date" name="dt_fecha_modificacion" ng-model="encuestaEditar.dt_fecha_modificacion" placeholder="Descripción o nombre del producto" maxlength="40" readonly="readonly" class="form-control"/>
-          </div>
-        </div>
-        <div class="form-group">
+    <!--Formulario para confirmación de guardado definitivo-->
+    <div id="editarDefinitivoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Variables disponibles</h4>
-            <p class="modal-title">Seleccione las variables que desea asignar a la encuesta.</p>
+            <button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&#215;</span><span class="sr-only">Close</span></button>
+            <h4 id="myModalLabel" class="modal-title">Guardar definitivo</h4>
           </div>
           <div class="modal-body">
-            <script type="text/ng-template" id="nodes_render.html">
-              <div class="tree-node tree-node-content bs-callout"><a ng-if="node.nodes &amp;&amp; node.nodes.length &gt; 0" data-nodrag="" ng-click="toggle(this)" class="btn btn-clipboard btn-xs"><span id="enlaceGris" ng-class="{'glyphicon glyphicon-triangle-right': collapsed, 'glyphicon glyphicon-triangle-bottom': !collapsed}" class="glyphicon"></span></a><span ng-if="node.nodes &amp;&amp; node.nodes.length == 0" data-nodrag="" ng-click="toggle(this)">&nbsp</span>
-                <input type="checkbox" value="{{node.id}}" ng-model="node.respuesta" ng-change="newSubItem(this)"/> {{node.title}}
-              </div>
-              <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
-                <li ng-repeat="node in node.nodes" ui-tree-node="" ng-include="'nodes_render.html'"></li>
-              </ol>
-            </script>
-            <div id="tree-root" ui-tree="" data-drag-enabled="false">
-              <ol ui-tree-nodes="" ng-model="data">
-                <li ng-repeat="node in data" ui-tree-node="" ng-include="'nodes_render.html'"></li>
-              </ol>
-            </div>
+            <p>Su encuesta se a editado correctamente, pero no podrá insertar preguntas hasta que la guarde definitivamente. Por favor, verifique todos los datos que a ingresado y si son correctos proceda a guardarla de manera definitiva.</p>¿Desea guardar la encuesta de manera definitiva?
           </div>
+          <div class="modal-footer"><a type="button" data-dismiss="modal" class="btn btn-default">Cancelar</a><a type="button" data-dismiss="modal" href="#/encuestaInformacion" ng-click="editarDefinitivo()" class="btn btn-primary">Guardar Definitivo</a></div>
         </div>
-      </form>
-    </div>
-  </div>
-</div>
-<!--Formulario para confirmación de guardado definitivo-->
-<div id="editarDefinitivoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&#215;</span><span class="sr-only">Close</span></button>
-        <h4 id="myModalLabel" class="modal-title">Guardar definitivo</h4>
       </div>
-      <div class="modal-body">
-        <p>Su encuesta se a editado correctamente, pero no podrá insertar preguntas hasta que la guarde definitivamente. Por favor, verifique todos los datos que a ingresado y si son correctos proceda a guardarla de manera definitiva.</p>¿Desea guardar la encuesta de manera definitiva?
-      </div>
-      <div class="modal-footer"><a type="button" data-dismiss="modal" class="btn btn-default">Editar</a><a type="button" data-dismiss="modal" href="#/encuestaInformacion" ng-click="editarDefinitivo()" class="btn btn-primary">Guardar Definitivo</a></div>
     </div>
   </div>
 </div>

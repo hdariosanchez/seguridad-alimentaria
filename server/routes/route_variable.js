@@ -28,10 +28,10 @@ exports.getlistadoVariable = function(req, res, next) {
             datos[i]['respuesta']=false;
             row=datos[i];
             if(row.int_id_padre == null){
-                JSON.stringify(parents.push(row));
+                parents.push(row);
             }
             else{
-                JSON.stringify(childrens.push(row));
+                childrens.push(row);
             }
         }
         for(var j=0; j<2; j++) {
@@ -42,10 +42,11 @@ exports.getlistadoVariable = function(req, res, next) {
         res.json(json);
     });
 };
-var json=[];
-// Recursividad para comprobar los children
-var loopChildrens = function(rows, parent, bandera){
 
+
+var json=[];
+//Recursividad para comprobar los children
+var loopChildrens = function(rows, parent, bandera){
     if(rows.length>0 && bandera ==0){
         rows.forEach(function (row) {
             if(row.int_id_padre == parent.id){
@@ -60,8 +61,8 @@ var loopChildrens = function(rows, parent, bandera){
     }
 };
 
-// Limpia los datos...
 
+// Limpia los datos...
 var limpiaDatos = function(){
     json.splice(0, json.length);
     console.log("Longitud de json->"+json.length);
@@ -113,4 +114,11 @@ exports.eliminar = function(req,res) {
         //console.log("Número de variable = " + id_variable + " , descripcion " + desc_prod);
     }
     res.end();
+};
+
+exports.editarVarible = function(req, res) {
+    data_variable.connect();
+    data_variable.db_editarVarible(req.body, function (datos) {
+        res.json(datos);
+    });
 };

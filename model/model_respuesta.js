@@ -23,7 +23,7 @@ exports.db_insertar = function(respuestaNueva, id_pregunta, cb) {
     var correcto = 0,
         insertado = true;
     respuestaNueva.valor ? correcto = 1 : correcto = 0;
-    if(respuestaNueva.type === 'checkbox' || respuestaNueva.type === 'radio'){
+    if(respuestaNueva.int_id_tipo_pregunta === 'checkbox' || respuestaNueva.int_id_tipo_pregunta === 'radio'){
         client.query("INSERT INTO test (int_id, int_id_pregunta, str_descripcion, int_valor, int_correcto, str_desc_campo) VALUES (?, ?, ?, ?, ?, ?);",
             [respuestaNueva.numId, id_pregunta, respuestaNueva.str_descripcion, respuestaNueva.numEscala, correcto, respuestaNueva.cuales || ''])
             .on('error', function(err) {
@@ -34,7 +34,7 @@ exports.db_insertar = function(respuestaNueva, id_pregunta, cb) {
                 cb(insertado);
             });
     }else{
-        if(respuestaNueva.type === 'range'){
+        if(respuestaNueva.int_id_tipo_pregunta === 'range'){
             client.query("INSERT INTO escala (int_id_pregunta, str_desc_inicio, str_desc_fin, int_inicio, int_fin) VALUES (?, ?, ?, ?, ?);",
                 [id_pregunta, respuestaNueva.str_descripcion, respuestaNueva.str_desc_fin, respuestaNueva.numId , respuestaNueva.numEscala])
                 .on('error', function(err) {

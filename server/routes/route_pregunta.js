@@ -121,7 +121,7 @@ var funcionLoopRespuesta = function (pregunta) {
             //------------------------------------------------
             j_loop = 0;
             k_loop = 0;
-            if(pregunta.type != 'canasta'){
+            if(pregunta.int_id_tipo_pregunta != 'canasta'){
                 funcionLoopRespuestaSMHF(pregunta, dat[0].int_id);
             } else {
                 funcionLoopRespuestaCanasta(pregunta, dat[0].int_id);
@@ -151,23 +151,97 @@ var funcionLoopRespuestaSMHF = function (pregunta, idRespuesta) {
 
 
 var funcionLoopRespuestaCanasta = function (pregunta, idRespuesta) {
-    if(k_loop  < pregunta.productos.length){
+    if(k_loop  < pregunta.nodes.length){
         if(k_loop === 0){
             l_loop = 0;
-            funcionLoopRespuestaCanastaFrecuencia(pregunta.productos[k_loop], idRespuesta)
+            funcionLoopRespuestaCanastaFrecuencia(pregunta.nodes[k_loop], idRespuesta)
         }
-        data_respuesta.db_insertar_canasta_producto(pregunta.productos[k_loop++], idRespuesta, function (bandera) {
-            console.log('Se inserto los productos correctamente '+ bandera);
+        data_respuesta.db_insertar_canasta_producto(pregunta.nodes[k_loop++], idRespuesta, function (bandera) {
+            console.log('Se inserto los nodes de producto correctamente '+ bandera);
         });
         funcionLoopRespuestaCanasta(pregunta, idRespuesta);
     }
 };
 
 var funcionLoopRespuestaCanastaFrecuencia = function (producto, idRespuesta) {
-    if(l_loop  < producto.frecuencia.length){
-        data_respuesta.db_insertar_canasta_frecuencia(producto.frecuencia[l_loop++], idRespuesta, function (bandera) {
+    if(l_loop  < producto.nodes.length){
+        data_respuesta.db_insertar_canasta_frecuencia(producto.nodes[l_loop++], idRespuesta, function (bandera) {
              console.log('Si ingreso las frecuencias. '+bandera);
         });
         funcionLoopRespuestaCanastaFrecuencia(producto, idRespuesta);
+    }
+};
+
+
+exports.eliminarPreguntaAdmin = function(req, res) {
+    data_pregunta.connect();
+    data_pregunta.eliminarPregunta(req.query, function (datos) {
+        if(datos){
+            res.end();
+        } else {
+            res.status(500).end();
+        }
+    });
+};
+
+
+//Guardar pregunta de tipo matriz
+
+exports.insertarPreguntaMatriz = function(req,res) { //Ingreso de una pregunta con recursividad.
+    data_pregunta.connect();
+    data_respuesta.connect();
+    try {
+        data_pregunta.db_insertar(req.body, function(bandera){
+            if(bandera){
+
+                data_pregunta.db_get_ultimo_id(function (dat) {
+
+
+                    //------------------------------------------------
+                    i_loop =0;
+                    j_loop = 0;
+                    k_loop = 0;
+                    if(pregunta.int_id_tipo_pregunta != 'canasta'){
+                        funcionLoopRespuestaSMHF(pregunta, dat[0].int_id);
+                    } else {
+                        funcionLoopRespuestaCanasta(pregunta, dat[0].int_id);
+                    }
+                    //------------------------------------------------
+                    i_loop++;
+                    if(i_loop < datos.length) {
+                        funcionLoopRespuesta(datos[i_loop]);
+                    } else{
+                        console.log(' i_loop Fuera de los limites');
+                        i_loop =0;
+                    }
+
+
+                });
+
+            }
+        });
+
+
+
+
+        res.end();
+    } catch (e) {
+        res.end();
+        console.log('Error en el route_en el catch en routes/route_pregunta'+e);
+    }
+};
+
+var funcionLoopPreguntaMatriz = function (pregunta) {
+
+};
+
+var funcionLoopRespuestaSMHF = function (pregunta, idRespuesta) {
+    if(j_loop  < pregunta.nodes.length){
+        data_respuesta.db_insertar(pregunta.nodes[j_loop++], idRespuesta, function(bandera){
+            if(bandera) {
+                console.log('inserto en if de insercion de respuesta ' + bandera);
+            }
+        });
+        funcionLoopRespuestaSMHF(pregunta, idRespuesta);
     }
 };

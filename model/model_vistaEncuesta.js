@@ -45,8 +45,8 @@ exports.db_get_listadoPregunta = function(req,res,cb) {
 exports.db_get_listadoTest = function(req,res,cb) {
     var data = [];
     client.query("select t.int_id, t.int_id_pregunta, t.str_descripcion, t.int_valor, t.int_correcto, t.str_desc_campo, p.int_id_tipo_pregunta " +
-    "from test as t inner join pregunta as p on p.int_id = t.int_id_pregunta AND p.int_id_encuesta = ?", [req.query.intId])
-
+    "from test as t inner join pregunta as p on p.int_id = t.int_id_pregunta AND p.int_id_encuesta = ?",
+        [req.query.intId])
         .on('result', function(res) {
             res.on('row', function(row) {
                 data.push(row);
@@ -66,7 +66,8 @@ exports.db_get_listadoTest = function(req,res,cb) {
 exports.db_get_listadoEscala = function(req, res, cb) {
     var data = [];
     client.query("SELECT e.int_id_pregunta, e.str_desc_inicio, e.str_desc_fin, e.int_inicio, e.int_fin, p.int_id_tipo_pregunta from escala as e inner join pregunta " +
-    "as p on p.int_id = e.int_id_pregunta AND p.int_id_encuesta = ?", [req.query.intId])
+    "as p on p.int_id = e.int_id_pregunta AND p.int_id_encuesta = ?",
+        [req.query.intId])
         .on('result', function(res) {
             res.on('row', function(row) {
                 data.push(row);
@@ -92,7 +93,8 @@ exports.db_get_listado_canasta_frecuencia = function(req, res, cb) {
     var data = [];
     client.query("SELECT  f.int_id, f.str_descripcion, f.flt_coeficiente, f.str_estado, p.int_id_tipo_pregunta, cf.int_id_pregunta " +
     "FROM pregunta as p, canasta_frecuencia as cf, frecuencia as f " +
-    "WHERE p.int_id = cf.int_id_pregunta AND  f.int_id = cf.int_id_frecuencia AND p.int_id_encuesta = ?", [req.query.intId])
+    "WHERE p.int_id = cf.int_id_pregunta AND  f.int_id = cf.int_id_frecuencia AND p.int_id_encuesta = ?",
+        [req.query.intId])
         .on('result', function(res) {
             res.on('row', function(row) {
                 data.push(row);
@@ -114,7 +116,8 @@ exports.db_get_listado_canasta_producto = function(req, res, cb) {
     var data = [];
     client.query("SELECT pr.int_id, pr.int_id_padre, pr.flt_numero, pr.str_descripcion, pr.str_estado, p.int_id_tipo_pregunta, cp.int_id_pregunta " +
     "FROM pregunta as p, canasta_producto as cp, producto as pr " +
-    "WHERE p.int_id = cp.int_id_pregunta AND  pr.int_id = cp.int_id_producto AND p.int_id_encuesta = ?", [req.query.intId])
+    "WHERE p.int_id = cp.int_id_pregunta AND  pr.int_id = cp.int_id_producto AND p.int_id_encuesta = ?",
+        [req.query.intId])
         .on('result', function(res) {
             res.on('row', function(row) {
                 data.push(row);

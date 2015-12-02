@@ -100,7 +100,8 @@ exports.db_eliminar = function(id_producto, cb) {
         .on('end', function() {
             cb(eliminado);
         });
-}
+};
+
 
 
 // desconecta la base de datos

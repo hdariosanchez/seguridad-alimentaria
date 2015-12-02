@@ -43,7 +43,7 @@ exports.db_get_listadoEncuestaVariable = function(req, cb) {
                 });
         })
         .on('end', function() {
-            data.length > 0? cb(data) : cb(false);
+            data.length > 0 ? cb(data) : cb(false);
         });
 };
 

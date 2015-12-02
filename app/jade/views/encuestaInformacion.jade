@@ -1,0 +1,29 @@
+.container-fluid
+    .row
+        .col-xs-12.col-sm-12.col-md-12(align="center")
+            legend
+                | GESTION DE PREGUNTAS
+    .row
+        .col-sm-12
+            rd-widget
+                rd-widget-header(icon="fa-calendar", title="Encuestas disponibles")
+                    a(href="") Manage
+                .table-responsive
+                    table.tableCursoAsignatura.table
+                        thead
+                            tr
+                                td
+                                    strong Titulo
+                                td
+                                    strong Destinado A
+                                td
+                                    strong Fecha Creación
+                                td
+                                    strong Gestión
+                        tbody
+                            tr(ng-repeat="encuesta in listadoEncuesta")
+                                td {{encuesta.str_titulo}}
+                                td {{encuesta.str_destinado_a}}
+                                td {{encuesta.dt_fecha_creacion}}
+                                td
+                                    a.btn.btn-primary.btn-xs(type="button", href="#/pregunta", ng-click="encuestaSeleccion(encuesta)") Preguntas

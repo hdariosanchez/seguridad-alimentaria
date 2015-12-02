@@ -105,6 +105,19 @@ exports.db_eliminar = function(id_producto, cb) {
         });
 }
 
+exports.db_editarVarible = function(variableObj, cb) {
+    var editado = true;
+    client.query("UPDATE variable SET str_descripcion = ? WHERE int_id = ?;",
+        [variableObj.str_descripcion, variableObj.int_id])
+        .on('error', function(err) {
+            editado = false;
+            console.log('Error: SQL error model_variable / db_editarVarible : ' + inspect(err));
+        })
+        .on('end', function() {
+            cb(editado);
+        });
+}
+
 
 
 // desconecta la base de datos
