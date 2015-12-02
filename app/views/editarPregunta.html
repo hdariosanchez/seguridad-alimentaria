@@ -1,0 +1,174 @@
+
+<div class="container-fluid">
+  <!--Encabezado (Datos generales de la encuesta)-->
+  <div class="row">
+    <div class="modal-header">
+      <h4 class="text-center modal-title"><strong>{{encuesta.str_titulo}}</strong></h4>
+      <p class="text-center modal-title"><strong>Objetivo:</strong>{{encuesta.str_objetivo}}</p>
+      <p class="text-center modal-title">Encuesta No. {{encuesta.int_numero}}</p>
+    </div>
+    <div class="modal-body">
+      <p class="text-left"><strong>Descripción:</strong>{{encuesta.str_descripcion}}</p>
+      <p class="text-left"><strong>Destinado a:</strong>{{encuesta.str_destinado_a}}</p>
+      <p class="text-left modal-title"><strong>Instrucciones:</strong>{{encuesta.srt_instrucciones}}</p>
+      <p class="text-left"><strong>Fecha de creación:</strong>{{encuesta.dt_fecha_creacion}}</p>
+      <p class="text-left"><strong>Estado:</strong>{{encuesta.str_estado}}</p>
+    </div>
+    <div class="modal-footer"></div>
+  </div>
+  <!--Vista de las preguntas guardadas-->
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+      <div ng-show="visiblePreguntaFormada" class="check-element animate-show">
+        <div class="thumbnail">
+          <div class="modal-header">
+            <h4 class="text-center modal-title"><strong>PREGUNTAS GENERADAS</strong></h4>
+          </div>
+          <div class="modal-body">
+            <script type="text/ng-template" id="nodes_renderer.html">
+              <section id="{{variableSeleccionada}}" ng-if="node.section == variableSeleccionada">
+                <div ng-class="{'panel panel-default': node.nodes &amp;&amp; node.nodes.length &gt; 0}">
+                  <div ng-if="node.nodes &amp;&amp; node.nodes.length &gt; 0" ui-tree-handle="" class="panel-heading"><i ng-if="node.nodes &amp;&amp; node.nodes.length &gt; 0" class="glyphicon glyphicon-question-sign"></i>{{node.title}}<a data-nodrag="" ng-click="remove(this)" class="pull-right btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a></div>
+                  <div ng-if="node.nodes &amp;&amp; node.nodes.length == 0">
+                    <input type="{{node.type}}" name="{{node.codigo}}" value="{{node.codigo}}" ng-if="node.type == 'checkbox' || node.type == 'radio'"/>
+                    <input type="{{node.type}}" name="{{node.codigo}}" ng-if="node.type == 'text'" class="form-control input-sm"/>
+                    <input type="{{node.type}}" min="{{rango.minimo}}" max="{{rango.maximo}}" ng-model="dato.valor" step="1" ng-if="node.type == 'range'" class="input-lg"/>
+                    <input type="{{node.type}}" ng-model="dato.valor" ng-if="node.type == 'date'" class="form-control input-sm"/>
+                    <input type="{{node.type}}" ng-if="node.type == 'time'" class="form-control input-sm"/>{{node.title}}
+                    <input type="text" name="{{node.codigo}}" value="{{node.cuales}}" ng-if="node.otros == true"/>
+                    <p class="pull-right">{{node.title2}}</p>
+                  </div>
+                  <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="node in node.nodes" ng-include="'nodes_renderer.html'"></li>
+                  </ol>
+                </div>
+              </section>
+            </script>
+            <div id="tree-root" ui-tree="" data-drag-enabled="false">
+              <ol ui-tree-nodes="" ng-model="data">
+                <li ng-repeat="node in data" ui-tree-node="" ng-include="'nodes_renderer.html'" ng-if="node.section == variableSeleccionada"></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Variables e ingreso de preguntas-->
+  <div class="row">
+    <!--Visualización de variables-->
+    <div class="col-sm-4">
+      <div class="thumbnail">
+        <div class="input-group">
+          <div class="modal-header">
+            <h4 class="text-center modal-title"><strong>VARIABLES</strong></h4>
+          </div>
+          <div class="modal-body">
+            <ul ng-model="data">
+              <li type="none" ng-repeat="node in listadoVariable" ng-include="'variable_renderer.html'"></li>
+            </ul>
+          </div>
+          <!--script para obtener variables con recursividad-->
+          <script type="text/ng-template" id="variable_renderer.html"><a href="" title="" ng-click="tester(node)" style="font-size:12px" class="pull-left">{{node.str_descripcion}}</a>
+            <ul ng-model="node.nodes" ng-class="{hidden: collapsed}">
+              <li type="none" ng-repeat="node in node.nodes" ng-include="'variable_renderer.html'"></li>
+            </ul>
+          </script>
+        </div>
+      </div>
+    </div>
+    <!--Gestión de preguntas-->
+    <div class="col-sm-8">
+      <div class="thumbnail">
+        <div class="modal-header">
+          <h4 class="text-center modal-title"><strong>EDICION DE PREGUNTAS</strong></h4>
+        </div>
+        <div class="modal-body">
+          <script type="text/ng-template" id="nodes_renderer.html">
+            <p>{{node.str_descripcion_variable}}</p>
+            <div ng-if="node.nodes &amp;&amp; node.int_id_padre == null"><strong>{{node.int_numero}}</strong><strong>{{node.str_enunciado}}</strong><i ng-if="node.nodes &amp;&amp; node.int_id_padre == null" class="glyphicon glyphicon-question-sign"></i><span ng-if="node.int_obligatoria == 1" style="color: red">*</span><a title="Editar Pregunta" data-nodrag="" data-toggle="modal" data-target="#editarPreguntaModal" ng-click="editarPregunta(this)" style="margin-right: 8px;" class="pull-right btn btn-clipboard btn-xs"><span class="glyphicon glyphicon-edit"></span></a></div>
+            <div ng-if="node.nodes.length == 0">
+              <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" ng-value="node.int_id" ng-if="node.int_id_tipo_pregunta == 'radio'" ng-model="node.respuesta" ng-change="trueFalse(node)"/>
+              <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.int_id_tipo_pregunta == 'checkbox'" ng-model="node.respuesta"/>
+              <textarea rows="2" cols="65" ng-model="node.respuesta" ng-if="node.int_id_tipo_pregunta == 'text'"></textarea>
+              <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'time'" ng-model="node.respuesta"/>
+              <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'date'" ng-model="node.respuesta"/>
+              <input type="{{node.int_id_tipo_pregunta}}" min="{{node.int_inicio}}" max="{{node.int_fin}}" step="1" ng-if="node.int_id_tipo_pregunta == 'range'" ng-model="node.respuesta" class="input-lg"/>
+              <!--a.pull-right.btn.btn-clipboard.btn-xs(title="Editar", data-toggle='modal', data-target='#editarProductoModal', data-nodrag="",-->
+              <!--ng-click="tester(node)", style="margin-right: 8px;")-->
+              <!--    span.glyphicon.glyphicon-pencil(aria-hidden='true')-->{{node.str_descripcion}} {{node.str_desc_campo}}
+              <input type="text" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.str_desc_campo != ''" ng-model="node.respuestaOtros"/>
+              <p class="pull-left">{{node.str_desc_inicio}} {{node.int_inicio}}</p>
+              <p class="pull-right">{{node.str_desc_fin}} {{node.int_fin}}</p><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+              <p ng-if="node.int_id_tipo_pregunta == 'range'"><strong>Su respuesta: {{node.respuesta}}</strong></p><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+            </div>
+            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+              <li ng-repeat="node in node.nodes" ng-include="'nodes_renderer.html'"></li>
+            </ol>
+          </script>
+          <div id="tree-root" ui-tree="" data-drag-enabled="false">
+            <ol ui-tree-nodes="" ng-model="preguntas">
+              <li ng-repeat="node in preguntas" ui-tree-node="" ng-include="'nodes_renderer.html'"></li>
+            </ol>
+          </div>
+          <!--FINALIZA PARTE DE LA VISUALIZACION DE LA ENCUESTA YA FORMADA-->
+          <center><a ng-click="" class="btn btn-success">Guardar</a><a ng-click="ingresarRespuesta()" class="btn btn-success pull-left">Cancelar</a></center>
+          <h3>Comportamiento de los datos</h3>
+          <div class="info">{{info}}</div>
+          <pre class="code">{{ preguntas | json }}
+</pre>
+        </div>
+        <div class="panel-footer"></div>
+        <button type="button" data-toggle="" data-target="" ng-click="addPregunta(pregunta)" class="btn btn-primary pull-center">Ingresar</button>
+        <button type="button" data-toggle="" data-target="" ng-click="guardar()" class="btn btn-primary pull-center">Guardar todo</button>
+      </div>
+    </div>
+    <!--Panel editar Pregunta-->
+    <div id="editarPreguntaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&#215;</span><span class="sr-only">Close</span></button>
+            <h4 id="myModalLabel" class="modal-title">Eliminar Grupo.</h4>
+          </div>
+          <div class="modal-body">
+            <script type="text/ng-template" id="nodes_rendererEditar.html">
+              <div ng-if="node.nodes &amp;&amp; node.int_id_padre == null"><strong>{{node.int_numero}}</strong>
+                <input type="text" ng-model="node.str_enunciado" ng-value="node.str_enunciado"/><i ng-if="node.nodes &amp;&amp; node.int_id_padre == null" class="glyphicon glyphicon-question-sign"></i><span ng-if="node.int_obligatoria == 1" style="color: red">*</span>
+              </div>
+              <div ng-if="node.nodes.length == 0">
+                <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" ng-value="node.int_id" ng-if="node.int_id_tipo_pregunta == 'radio'" ng-model="node.respuesta" ng-change="trueFalse(node)"/>
+                <input type="{{node.int_id_tipo_pregunta}}" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.int_id_tipo_pregunta == 'checkbox'" ng-model="node.respuesta"/>
+                <textarea rows="2" cols="65" ng-model="node.respuesta" ng-if="node.int_id_tipo_pregunta == 'text'"></textarea>
+                <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'time'" ng-model="node.respuesta"/>
+                <input type="{{node.int_id_tipo_pregunta}}" ng-if="node.int_id_tipo_pregunta == 'date'" ng-model="node.respuesta"/>
+                <input type="{{node.int_id_tipo_pregunta}}" min="{{node.int_inicio}}" max="{{node.int_fin}}" step="1" ng-if="node.int_id_tipo_pregunta == 'range'" ng-model="node.respuesta" class="input-lg"/>
+                <input type="text" ng-model="node.str_descripcion" ng-value="node.str_descripcion"/>
+                <input type="text" ng-model="node.str_desc_campo" ng-value="node.str_desc_campo" ng-if="node.str_desc_campo != ''"/>
+                <input type="text" name="{{node.int_id_padre}}" value="{{node.int_id}}" ng-if="node.str_desc_campo != ''" ng-model="node.respuestaOtros" readonly="true"/>
+                <!--p.pull-left {{node.str_desc_inicio}} {{node.int_inicio}}-->
+                <!--p.pull-right {{node.str_desc_fin}} {{node.int_fin}}--><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+                <p ng-if="node.int_id_tipo_pregunta == 'range'"><strong>Su respuesta: {{node.respuesta}}</strong></p><br ng-if="node.int_id_tipo_pregunta == 'range'"/>
+              </div>
+              <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                <li ng-repeat="node in node.nodes" ng-include="'nodes_rendererEditar.html'"></li>
+              </ol>
+            </script>
+            <div id="tree-root" ui-tree="" data-drag-enabled="false">
+              <ol ui-tree-nodes="" ng-model="preguntaEdicion">
+                <li ng-repeat="node in preguntaEdicion" ui-tree-node="" ng-include="'nodes_rendererEditar.html'"></li>
+              </ol>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Cancelar</button>
+            <button type="button" data-dismiss="modal" ng-click="" class="btn btn-primary">Actualizar</button>
+          </div>
+        </div>
+      </div>
+      <h3>Comportamiento de los datos</h3>
+      <div class="info">{{info}}</div>
+      <pre class="code">{{ listadoVariable | json }}</pre>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+.container
+    .modal-header
+        h1#myModalLabel Nueva Encuesta
+                .form-group.pull-right
+                    a.btn.btn-default(type="button", href='#/') Cancelar
+                    button.btn.btn-primary(type="button", ng-click="guardar()", ng-disabled="nuevoEncuestaModal.$invalid") Guardar
+        p#myNodalLabel La creación de una nueva encuesta se empieza al definir información general que va a poseer y al asignar las variables que va a utilizar la encuesta.
+        p#myModalLabel Los campos marcados con (
+            b(style="color:red") *
+            |) son requeridos.
+    .modal-body
+            form#nuevoEncuestaModal.form-horizontal(name="nuevoEncuestaModal",data-toggle="validator", role="form")
+                    //Input del int_numero de la Encuesta
+                    .form-group(ng-class="{'has-error': nuevoEncuestaModal.int_numero.$invalid && nuevoEncuestaModal.int_numero.$touched}")
+                        label(for="int_numero") Número
+                            sup(style="color:red")  *
+                        .input-group
+                            .input-group-addon
+                                i.glyphicon.glyphicon-tag
+                            input#int_numero.form-control(type="text", name="int_numero", ng-model="encuestaNueva.int_numero", placeholder="Ingrese el número de encuesta. Ej: 123",
+                            maxlength="3", pattern="[-+]?[0-9]*", ng-required="true")
+                            span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="nuevoEncuestaModal.int_numero.$invalid && nuevoEncuestaModal.int_numero.$touched")
+                        span.help-block(ng-if="nuevoEncuestaModal.int_numero.$error.required && nuevoEncuestaModal.int_numero.$touched") El campo es requerido
+                        span.help-block(ng-if="nuevoEncuestaModal.int_numero.$error.pattern && nuevoEncuestaModal.int_numero.$dirty") Solo se acepta números. Ej:123
+                    //Input de la str_titulo de la Encuesta
+                    .form-group(ng-class="{'has-error': nuevoEncuestaModal.str_titulo.$invalid && nuevoEncuestaModal.str_titulo.$touched }")
+                        label(for="str_titulo") Título
+                            sup(style="color:red")  *
+                        .input-group
+                            .input-group-addon
+                                i.glyphicon.glyphicon-tag
+                            input#str_titulo.form-control(type="text", name="str_titulo", ng-model="encuestaNueva.str_titulo", placeholder="Ingrese el título",
+                            maxlength="300", ng-required="true")
+                            span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="nuevoEncuestaModal.str_titulo.$invalid && nuevoEncuestaModal.str_titulo.$touched")
+                        span.help-block(ng-if="nuevoEncuestaModal.str_titulo.$error.required && nuevoEncuestaModal.str_titulo.$touched") El campo es requerido
+                    //Input de la str_descripcion de la Encuesta
+                    .form-group
+                        label(for="str_descripcion") Descripción
+                        .input-group
+                            .input-group-addon
+                                i.glyphicon.glyphicon-tag
+                            input#str_descripcion.form-control(type="text", name="str_descripcion", ng-model="encuestaNueva.str_descripcion",
+                            placeholder="Ingrese la descripción", maxlength="600")
+                    //Input de la str_objetivo de la Encuesta
+                    .form-group
+                        label(for="str_objetivo") Objetivo
+                        .input-group
+                            .input-group-addon
+                                i.glyphicon.glyphicon-tag
+                            input#str_objetivo.form-control(type="text", name="str_objetivo", ng-model="encuestaNueva.str_objetivo",
+                            placeholder="Ingrese el objetivo", maxlength="400")
+                    //Input de la destinado a de la Encuesta
+                    .form-group
+                        label(for="str_destinado_a") Destinatario
+                        .input-group
+                            .input-group-addon
+                                i.glyphicon.glyphicon-tag
+                            input#str_destinado_a.form-control(type="text", name="str_destinado_a", ng-model="encuestaNueva.str_destinado_a",
+                            placeholder="Ingrese el destinatario", maxlength="300")
+                    //Input de la str_instrucciones de la Encuesta
+                    .form-group
+                        label(for="str_instrucciones") Instrucciones
+                        .input-group
+                            .input-group-addon
+                                i.glyphicon.glyphicon-tag
+                            textarea#str_instrucciones.form-control(type="text", name="str_instrucciones", ng-model="encuestaNueva.str_instrucciones",
+                            placeholder="Ingrese instrucciones", maxlength="1200", rows="3")
+                    .form-group
+                        .modal-header
+                            h4.modal-title Variables disponibles
+                            p.modal-title Seleccione las variables que desea asignar a la encuesta.
+                        .modal-body
+                            script(type='text/ng-template', id='nodes_render.html')
+                                .tree-node.tree-node-content.bs-callout()
+                                    a.btn.btn-clipboard.btn-xs(ng-if="node.nodes && node.nodes.length > 0", data-nodrag="", ng-click="toggle(this)")
+                                        span#enlaceGris.glyphicon(ng-class="{'glyphicon glyphicon-triangle-right': collapsed, 'glyphicon glyphicon-triangle-bottom': !collapsed}")
+                                    span(ng-if="node.nodes && node.nodes.length == 0", data-nodrag="", ng-click="toggle(this)") &nbsp
+                                    input(type="checkbox", value="{{node.id}}", ng-model="node.respuesta", ng-change="newSubItem(this)")
+                                    |  {{node.title}}
+                                ol(ui-tree-nodes="", ng-model="node.nodes", ng-class="{hidden: collapsed}")
+                                    li(ng-repeat="node in node.nodes", ui-tree-node="", ng-include="'nodes_render.html'")
+                            #tree-root(ui-tree="", data-drag-enabled="false")
+                                ol(ui-tree-nodes="", ng-model="listadoVariables")
+                                    li(ng-repeat="node in listadoVariables  ", ui-tree-node="", ng-include="'nodes_render.html'")
+
+
+
+
+//Formulario para confirmación de guardado definitivo
+#guardarDefinitivoModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+    .modal-dialog
+        .modal-content
+            .modal-header
+                button.close(type="button", data-dismiss="modal")
+                    span(aria-hidden="true") &#215;
+                    span.sr-only Close
+                h4#myModalLabel.modal-title Editar definitivo
+            .modal-body
+                p Su encuesta se a guardado correctamente, pero no podrá insertar preguntas hasta que la guarde definitivamente. Por favor, verifique todos los datos que a ingresado y si son correctos proceda a guardarla de manera definitiva.
+                |¿Desea guardar la encuesta de manera definitiva?
+            .modal-footer
+                a.btn.btn-default(type="button", data-dismiss="modal", href='#/editarEncuesta') Editar
+                a.btn.btn-primary(type="button", data-dismiss="modal", href='#/encuestaInformacion', ng-click="guardarDefinitivo()") Guardar Definitivo

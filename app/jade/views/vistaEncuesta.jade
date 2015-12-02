@@ -1,0 +1,170 @@
+.container-fluid
+    .row
+        //Formulario para verificacion de la eliminacion de un Grupo o Subgrupo
+        #encabezadoEncuestaModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(type="button", data-dismiss="modal")
+                            span(aria-hidden="true") &#215;
+                            span.sr-only Close
+                        h4#myModalLabel.modal-title Seleccionar localidad y famila
+                    .modal-body
+                        .form-group.has-feedback
+                            .row
+                                .col-sm-10.col-sm-offset-1
+                                    .input-group
+                                        .input-group-addon
+                                            |Cantón
+                                        select.form-control(ng-model="modeloCanton", ng-options="canton as canton.str_descripcion for canton in listadoCanton")
+                                            option(value="") Seleccione un cantón
+                        .form-group.has-feedback
+                            .row
+                                .col-sm-10.col-sm-offset-1
+                                    .input-group
+                                        .input-group-addon
+                                            |Parroquia
+                                        select.form-control(ng-model="modeloParroquia", ng-options="parroquia as parroquia.str_descripcion for parroquia in listadoParroquia")
+                                            option(value="") Seleccione una parroquia
+                        .form-group.has-feedback
+                            .row
+                                .col-sm-10.col-sm-offset-1
+                                    .input-group
+                                        .input-group-addon
+                                            | Comunidad
+                                        select.form-control(ng-model="modeloComunidad", ng-options="comunidad as comunidad.str_descripcion for comunidad in listadoComunidad")
+                                            option(value="") Seleccione una comunidad
+                        .form-group.has-feedback
+                            .row
+                                .col-sm-10.col-sm-offset-1
+                                    .input-group
+                                        .input-group-addon
+                                            | Código Familia
+                                        input.form-control(ng-model="numeroFamilia.numero", type="number", name="numeroFamilia", placeholder="Ingrese el código", ng-required="true")
+                        .form-group.has-feedback
+                            .row
+                                .col-sm-10.col-sm-offset-1
+                                    .input-group
+                                        .input-group-addon
+                                            | Descripción Familia
+                                        input.form-control(ng-model="numeroFamilia.str_descripcion", type="text", name="descripcionFamilia", placeholder="Ingrese una descripción de la familia", ng-required="true")
+                    .modal-footer
+                        button.btn.btn-default(type="button", data-dismiss="modal", onClick="location.reload();") Cancelar
+                        button.btn.btn-primary(type="button", data-dismiss="modal", ng-click="asignarRecursosEncuesta()") Asignar
+        .cl-lg-3(ng-hide="visible")
+
+        .cl-lg-6(ng-show="visible")
+            .row
+                .col-xs-12.col-sm-12.col-md-12(align="center")
+                    legend
+                        | INGRESO DE RESPUESTAS
+            .row
+                .col-xs-12.col-sm-12.col-md-12
+                    rd-widget
+                        rd-widget-header(icon="fa-calendar", title="Encuestas")
+                            a(href="") Acción
+                        .table-responsive
+                            table.tableCursoAsignatura.table
+                                thead
+                                    tr
+                                        td
+                                            strong Titulo
+                                        td
+                                            strong Destinado A
+                                        td
+                                            strong Fecha Creación
+                                        td
+                                            strong Gestión
+                                tbody
+                                    tr(ng-repeat="encuesta in listadoEncuesta")
+                                        td {{encuesta.str_titulo}}
+                                        td {{encuesta.str_destinado_a}}
+                                        td {{encuesta.dt_fecha_creacion}}
+                                        td
+                                            a.btn.btn-primary.btn-xs(type="button", href="", ng-click="seleccionarEncuesta(encuesta)") Responder
+        .cl-lg-3(ng-hide="visible")
+            .modal-header
+                .form-group
+                    button.btn.btn-default(type="button", data-dismiss="modal") Cancelar
+                    button.btn.btn-primary(type="button", data-dismiss="modal", ng-click="ingresarRespuesta()") Guardar
+            .thumbnail
+                //.papel_rayado(contenteditable, ng-show="visibleEncuesta")
+                .mygrid-wrapper-div( style="height: 600px; border-style: none; padding: 40px")
+                    center
+                        h4#myModalLabel {{preguntas[0].str_titulo}}
+                        h5#myModalLabel {{preguntas[0].str_objetivo}}
+                        h6#myModalLabel {{preguntas[0].str_destinado_a}}
+                        h6#myModalLabel {{preguntas[0].str_descripcion}}
+                        h6#myModalLabel {{preguntas[0].str_instrucciones}}
+                        h6#myModalLabel {{preguntas[1].fecha | date: "yyyy-MM-dd 'at' h:mm:ssa"}}
+                    br
+                    br
+                    script(type='text/ng-template', id='nodes_renderer.html')
+                        p#myModalLabel
+                            em {{node.str_descripcion_variable}}
+                        div(ng-if="node.nodes && node.int_id_padre == null")
+                            strong#myModalLabel {{$index + 1}}) &nbsp
+                            span(ng-if="node.int_obligatoria == 1", style="color: red") *
+                            strong#myModalLabel {{node.str_enunciado}}
+                            //a.pull-right.btn.btn-clipboard.btn-xs(title="Agregar respuesta", data-nodrag="", ng-click="newSubItem(this)", style="margin-right: 8px;")
+                            //    span.glyphicon.glyphicon-plus
+
+                        div(ng-if="node.nodes.length == 0")
+                            input(type="{{node.int_id_tipo_pregunta}}", name="{{node.int_id_padre}}", ng-value="node.int_id", ng-if="node.int_id_tipo_pregunta == 'radio'",
+                            ng-model="node.respuesta", ng-change="trueFalse(node)")
+                            input(type="{{node.int_id_tipo_pregunta}}", name="{{node.int_id_padre}}", value="{{node.int_id}}", ng-if="node.int_id_tipo_pregunta == 'checkbox'",
+                            ng-model="node.respuesta")
+                            textarea.form-control(rows="2", cols="65", ng-model="node.respuesta", ng-if="node.int_id_tipo_pregunta == 'text'")
+                            input.form-control(type="{{node.int_id_tipo_pregunta}}", ng-if="node.int_id_tipo_pregunta == 'time'", ng-model='node.respuesta')
+                            input.form-control(type="{{node.int_id_tipo_pregunta}}", ng-if="node.int_id_tipo_pregunta == 'date'", ng-model='node.respuesta')
+                            input.input-lg(type="{{node.int_id_tipo_pregunta}}", min="{{node.int_inicio}}", max="{{node.int_fin}}", step="1", ng-if="node.int_id_tipo_pregunta == 'range'",
+                            ng-model='node.respuesta')
+                            //a.pull-right.btn.btn-clipboard.btn-xs(title="Editar", data-toggle='modal', data-target='#editarProductoModal', data-nodrag="",
+                            //ng-click="tester(node)", style="margin-right: 8px;")
+                            //    span.glyphicon.glyphicon-pencil(aria-hidden='true')
+                            |  {{node.str_descripcion}} {{node.str_desc_campo}}
+                            input.form-control(type="text", name="{{node.int_id_padre}}", value="{{node.int_id}}", ng-if="node.str_desc_campo", ng-model="node.respuestaOtros")
+                            p.pull-left {{node.str_desc_inicio}} {{node.int_inicio}}
+                            p.pull-right {{node.str_desc_fin}} {{node.int_fin}}
+                            br(ng-if="node.int_id_tipo_pregunta == 'range'")
+                            p(ng-if="node.int_id_tipo_pregunta == 'range'")
+                                strong Su respuesta: {{node.respuesta}}
+                            br(ng-if="node.int_id_tipo_pregunta == 'range'")
+                        div(ng-if="node.nodes && node.nodes[0].nodes.length > 0")
+                            table.table.table-striped.table-bordered
+                                thead
+                                    tr
+                                        td(style="width: 5%; text-align:'center'")
+                                            strong N°
+                                        td(style="width: 25%")
+                                            strong PRODUCTO
+                                        td(style="width: 12%")
+                                            strong COSTO
+                                        td(style="width: 12%")
+                                            strong PESO
+                                        td(style="width: 46%; align = center")
+                                            strong FRECUENCIA
+                                tbody
+                                    tr(ng-repeat="producto in node.nodes")
+                                        td(style="width: 5%") {{$index + 1}}
+                                        td(style="width: 25%") {{producto.str_descripcion}}
+                                        td(style="width: 12%")
+                                            input.form-control(type="number", ng-model="producto.flt_costo", ng-value="producto.flt_costo")
+                                        td(style="width: 12%")
+                                            input.form-control(type="number", ng-model="producto.flt_peso", ng-value="producto.flt_peso")
+                                        td(style="width: 46%")
+                                            label.radio-inline(ng-repeat="frecuencia in producto.nodes")
+                                                input(type="radio", name="{{node.codigo + producto.int_id}}", ng-model="frecuencia.respuesta", ng-value="frecuencia.int_id", ng-change="trueFalseFrecuencia(producto.nodes, frecuencia)")
+                                                | {{frecuencia.str_descripcion}}
+                        ol(ui-tree-nodes="", ng-model="node.nodes", ng-class="{hidden: collapsed}")
+                            li(ng-repeat="node in node.nodes | orderBy:'int_id'", ng-include="'nodes_renderer.html'"),
+                    #tree-root(ui-tree="", data-drag-enabled="false")
+                        ol(ui-tree-nodes="", ng-model="preguntas[2]")
+                            li(ng-repeat="node in preguntas[2]", ui-tree-node="", ng-include="'nodes_renderer.html'")
+                    //FINALIZA PARTE DE LA VISUALIZACION DE LA ENCUESTA YA FORMADA
+
+            //h3 Comportamiento de los datos
+            //.info {{info}}
+            //pre.code.
+                {{ preguntas | json }}
+        // FINALIZA VISUALIZACION DE VARIABLES

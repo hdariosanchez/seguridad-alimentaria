@@ -1,0 +1,21 @@
+
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+        <h1>Agregar producto</h1>
+      </div>
+      <div class="modal-body">
+        <label>Descripción:</label>
+        <input/><br/><br/>
+        <label>Grupo:</label>
+        <select ng-model="nuevoProductoNumGrupo" ng-options="g.int_id as g.str_descripcion for g in awesomeThings"></select>
+      </div>
+      <div class="modal-footer">
+        <button ng-click="guardarProducto()" class="btn btn-success">Guardar</button>
+        <button type="button" ng-click="close('CLOSED')" data-dismiss="modal" aria-hidden="true" class="btn btn-danger">&times; Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

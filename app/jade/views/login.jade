@@ -1,0 +1,45 @@
+.container
+    .row
+        .col-sm-6.col-md-4.col-md-offset-4
+            .modal-header
+                h1.modal-title.text-center Login
+            .modal-body
+                .account-wall
+                    form#LoginForm.form-signin(name="loginForm")
+                        //Input de nick de usuario
+                        .form-group(ng-class="{'has-error':loginForm.username.$invalid && loginForm.username.$touched}")
+                            .row
+                                label.control-label(for='inputNick') Usuario
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-user
+                                    input#inputNick.form-control(type='text', name="username", ng-model='user.username',
+                                    placeholder="Nombre de usuario o nick", maxlength="20", autofocus='', ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="loginForm.username.$invalid && loginForm.username.$touched")
+                                span.help-block(ng-if="loginForm.username.$error.required && loginForm.username.$touched") Nombre de usuario requerido
+                        //Input de contraseña de usuario
+                        .form-group(ng-class="{'has-error':loginForm.contrasena.$invalid && loginForm.contrasena.$touched}")
+                            .row
+                                label.control-label(for='inputContrasena') Contraseña
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-lock
+                                    input#inputContrasena.form-control(type='password', name='contrasena', ng-model='user.password', data-minlength='6',
+                                    maxlength="30", placeholder='Contraseña', required='')
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="loginForm.contrasena.$invalid && loginForm.contrasena.$touched")
+                                span.help-block(ng-if="loginForm.contrasena.$error.required && loginForm.contrasena.$touched") Contraseña requerida
+                                span.help-block(ng-if="loginForm.contrasena.$dirty && loginForm.contrasena.$error.minlength") Mínimo 6 caracteres
+
+
+
+            .modal-footer
+                //Botones de acceder y cancelación
+                .form-group
+                    a.btn.btn-default(href='#/') Cancelar
+                    button.btn.btn-primary(type="submit", data-dismiss="modal", ng-click="login()", ng-disabled="loginForm.$invalid") Acceder
+                .form-group
+                    //Enlace para redirigir a la ayuda
+                    a.pull-right.need-help(href='#') ¿Necesita ayuda?
+                        span.clearfix
+                    //Enlace para ir a la página de registro
+                    a.pull-left.new-account(href='#/registro') Crear una cuenta

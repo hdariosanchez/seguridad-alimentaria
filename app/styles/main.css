@@ -1,0 +1,219 @@
+/* Identificadores propios para enlaces */
+#enlaceRojo {
+  color: #464646;
+  opacity: 0.4;
+}
+#enlaceRojo:hover {
+  color: #A00000;
+  opacity: 1;
+}
+#enlaceAzul {
+  color: #464646;
+  opacity: 0.4;
+}
+#enlaceAzul:hover {
+  color: #337AB7;
+  opacity: 1;
+}
+#enlaceVerde {
+   color: #464646;
+   opacity: 0.4;
+ }
+#enlaceVerde:hover {
+  color: #11A101;
+  opacity: 1;
+}#enlaceGris {
+   color: #464646;
+   opacity: 0.4;
+ }
+#enlaceGris:hover {
+  color: #464646;
+  opacity: 1;
+}
+
+/* Space out content a bit */
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Custom page header */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+a:link {
+  text-decoration:none;
+}
+a:hover {
+  text-decoration:none;
+}
+
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 80%;
+  }
+}
+.container-narrow > hr {
+  margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 40px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 30px;
+  }
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+
+  /* Estilo para grid options */
+  .gridStyles {
+    border: 10px;
+    width: 100%;
+    height: 300px;
+  }
+
+.animate-show {
+  line-height: 20px;
+  opacity: 1;
+  padding: 10px;
+  /*border: 1px solid black;*/
+  background: white;
+}
+
+.animate-show.ng-hide-add.ng-hide-add-active,
+.animate-show.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 0.5s;
+  transition: all linear 0.5s;
+}
+
+.animate-show.ng-hide {
+  line-height: 0;
+  opacity: 0;
+  padding: 0 10px;
+}
+
+.check-element {
+  padding: 10px;
+  /*border: 1px solid black;*/
+  background: white;
+}
+
+
+
+/*ESTILO PARA NG SHOW Y NG HIDE*/
+.animate-show {
+  line-height: 20px;
+  opacity: 1;
+  padding: 10px;
+  background: white;
+}
+.animate-show.ng-hide-add.ng-hide-add-active,
+.animate-show.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 0.5s;
+  transition: all linear 0.5s;
+}
+.animate-show.ng-hide {
+  line-height: 0;
+  opacity: 0;
+  padding: 0 10px;
+}
+
+
+/*EDICION DE INPUT CON CLICK*/
+.edit-in-place span {
+  cursor: pointer;
+}
+
+.edit-in-place input {
+  display: none;
+}
+
+.edit-in-place.active span {
+  display: none;
+}
+
+.edit-in-place.active input {
+  display: inline-block;
+}
+
+body {
+  padding-top: 70px;
+}
+
+.mygrid-wrapper-div {
+  border: solid #808080 1px;
+  overflow: scroll;
+  height: 600px;
+}
+
+.input-xs {
+  height: 22px;
+  width: 60px;
+  padding: 0px 0px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+
+.tableCursoAsignatura {
+  margin-bottom: 25px;
+  text-transform: none;
+  font-family: "Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 200;
+}

@@ -1,0 +1,18 @@
+
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" class="close">&times</button>
+        <h4 class="modal-title">Eliminar Producto</h4>
+      </div>
+      <div class="modal-body">
+        <label>¿Desea eliminar {{_descripcion}}</label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="close('No')" data-dismiss="modal" class="btn btn-default">No</button>
+        <button type="button" ng-click="close('Si')" data-dismiss="modal" class="btn btn-primary">Si</button>
+      </div>
+    </div>
+  </div>
+</div>

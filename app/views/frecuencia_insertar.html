@@ -1,0 +1,21 @@
+
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+        <h1>Agregar Frecuencia</h1>
+      </div>
+      <div class="modal-body">
+        <label>Descripcion:</label>
+        <input type="text" ng-model="frecuenciaDescripcion" required="required"/><br/><br/>
+        <label>Coeficiente:</label>
+        <input type="text" ng-model="frecuenciaCoeficiente" required="required" ng-="ng-"/>
+      </div>
+      <div class="modal-footer">
+        <button ng-click="asignarDatos()" class="btn btn-success">Guardar</button>
+        <button type="button" ng-click="close('CLOSED')" data-dismiss="modal" aria-hidden="true" class="btn btn-danger">&times; Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

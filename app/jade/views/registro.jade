@@ -1,0 +1,131 @@
+.container
+    .row
+        .col-sm-10.col-md-8.col-md-offset-2
+            .modal-header
+                h1.modal-title Registro de usuario
+                p.modal-title Todos los campos son requeridos.
+            .modal-body
+                form#formRegistro.form-horizontal(name ="formRegistro")
+                    //Input de nick de usuario
+                    .form-group(ng-class="{'has-error':formRegistro.nick.$invalid && formRegistro.nick.$touched}")
+                        .row
+                            label.col-sm-4.control-label(for='inputNick') Nick
+                            .col-sm-8
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-user
+                                    input#inputNick.form-control(type='text', ng-model="usuario.str_nick", placeholder="Ingrese un nombre de usuario o nick",
+                                    name="nick", maxlength="20", autofocus='', ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.nick.$invalid && formRegistro.nick.$touched")
+                                span.help-block(ng-if="formRegistro.nick.$error.required && formRegistro.nick.$touched") Campo requerido
+                    //Input de contraseña de usuario
+                    .form-group(ng-class="{'has-error':formRegistro.contrasena.$invalid && formRegistro.contrasena.$touched, 'has-warning':formRegistro.contrasena.$dirty && formRegistro.contrasena.$error.minlength}")
+                        .row
+                            label.col-sm-4.control-label(for='inputContrasena') Contraseña
+                            .col-sm-5
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-lock
+                                    input#inputContrasena.form-control(type='password', ng-model="usuario.str_contrasena", data-minlength='6', maxlength="30",
+                                    name="contrasena", placeholder='Contraseña', ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.contrasena.$invalid && formRegistro.contrasena.$touched")
+                                span.help-block(ng-if="formRegistro.contrasena.$error.required && formRegistro.contrasena.$touched") Campo requerido
+                                span.help-block(ng-if="formRegistro.contrasena.$dirty && formRegistro.contrasena.$error.minlength") Mínimo 6 caracteres
+                                span.help-block(ng-if="formRegistro.contrasena.$dirty && formRegistro.contrasena.$error.maxlength") Máximo 30 caracteres
+
+                    //Input de confirmar contraseña de usuario
+                    .form-group(ng-class="{'has-error':formRegistro.confirmar.$invalid && formRegistro.confirmar.$touched && incorrectaContrasena(), 'has-success':formRegistro.confirmar.$valid && formRegistro.confirmar.$dirty && correctaContrasena(), 'has-warning':formRegistro.confirmar.$dirty && incorrectaContrasena()}")
+                        .row
+                            label.col-sm-4.control-label(for='inputContrasenaConfirm') Confirmar contraseña
+                            .col-sm-5
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-duplicate
+                                    input#inputContrasenaConfirm.form-control(type='password', maxlength="30", ng-model="usuario.str_confirmar",
+                                    name="confirmar", placeholder='Confirme su contraseña', ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.confirmar.$invalid && formRegistro.confirmar.$touched && incorrectaContrasena()")
+                                span.help-block(ng-if="formRegistro.confirmar.$error.required && formRegistro.confirmar.$touched") Campo requerido
+                                span.help-block(ng-if="formRegistro.confirmar.$dirty && formRegistro.confirmar.$error.minlength") Mínimo 6 caracteres
+                                span.help-block(ng-if="formRegistro.confirmar.$dirty && formRegistro.confirmar.$error.maxlength") Máximo 30 caracteres
+                                span.help-block(ng-if="formRegistro.confirmar.$dirty && incorrectaContrasena()") No coincide la contraseña
+                                span.help-block(ng-if="formRegistro.confirmar.$dirty && correctaContrasena()") La contraseña coincide
+
+                    //Input de Nombre
+                    .form-group(ng-class="{'has-error':formRegistro.nombre.$invalid && formRegistro.nombre.$touched}")
+                        .row
+                            label.col-sm-4.control-label(for='inputNombre') Nombre
+                            .col-sm-8
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-tag
+                                    input#inputNombre.form-control(type='text', ng-model="usuario.str_nombre", placeholder="Ingrese su nombre",
+                                    name="nombre", maxlength="60", ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.nombre.$invalid && formRegistro.nombre.$touched")
+                                span.help-block(ng-if="formRegistro.nombre.$error.required && formRegistro.nombre.$touched") Campo requerido
+                    //Input de Apellido
+                    .form-group(ng-class="{'has-error':formRegistro.apellido.$invalid && formRegistro.apellido.$touched}")
+                        .row
+                            label.col-sm-4.control-label(for='inputApellido') Apellido
+                            .col-sm-8
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-tag
+                                    input#inputApellido.form-control(type='text', ng-model="usuario.str_apellido", placeholder="Ingrese su apellido",
+                                    name="apellido", maxlength="60", ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.apellido.$invalid && formRegistro.apellido.$touched")
+                                span.help-block(ng-if="formRegistro.apellido.$error.required && formRegistro.apellido.$touched") Campo requerido
+                    //Input de correo electrónico
+                    .form-group(ng-class="{'has-error':formRegistro.correo.$invalid && formRegistro.correo.$touched}")
+                        .row
+                            label.col-sm-4.control-label(for='inputCorreo') Correo electrónico
+                            .col-sm-8
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-envelope
+                                    input#inputCorreo.form-control.text-lowercase(type='email', ng-model="usuario.str_email", placeholder="correo@ejemplo.com",
+                                    name="correo", maxlength="150", pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.correo.$invalid && formRegistro.correo.$touched")
+                                span.help-block(ng-if="formRegistro.correo.$error.required && formRegistro.correo.$touched") Campo requerido
+                                span.help-block(ng-if="formRegistro.correo.$error.pattern && formRegistro.correo.$dirty") Dirección de correo inválida. ej. correo@ejemplo.com
+                    //Input de teléfono
+                    .form-group(ng-class="{'has-error':formRegistro.telefono.$invalid && formRegistro.telefono.$touched}")
+                        .row
+                            label.col-sm-4.control-label(for='inputApellido') Teléfono
+                            .col-sm-8
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-phone
+                                    input#inputApellido.form-control(type='text', ng-model="usuario.str_telefono", placeholder="Ingrese su número telefónico",
+                                    name="telefono", maxlength="15", pattern="[-+]?[0-9]*", ng-required="true")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.telefono.$invalid && formRegistro.telefono.$touched")
+                                span.help-block(ng-if="formRegistro.telefono.$error.required && formRegistro.telefono.$touched") Campo requerido
+                                span.help-block(ng-if="formRegistro.telefono.$error.pattern && formRegistro.telefono.$dirty") Solo se acepta números. ej. 0987654321
+                    //Input de fecha de nacimiento
+                    .form-group(ng-class="{'has-error':formRegistro.nacimiento.$invalid && formRegistro.nacimiento.$touched}")
+                        .row
+                            label.col-sm-4.control-label(for='inputNacimiento') Fecha de nacimiento
+                            .col-sm-5
+                                .input-group
+                                    .input-group-addon
+                                        i.glyphicon.glyphicon-calendar
+                                    input#inputNacimiento.form-control(type='date', ng-model="usuario.d_fecha_nacimiento", ng-required="true", name="nacimiento")
+                                    span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="formRegistro.nacimiento.$invalid && formRegistro.nacimiento.$touched")
+                                span.help-block(ng-if="formRegistro.nacimiento.$error.required && formRegistro.nacimiento.$touched") Campo requerido
+                    //Input de sexo del usuario
+                    .form-group(ng-class="{'has-warning':formRegistro.sexo.$invalid}")
+                        .row
+                            label.col-sm-4.control-label(for='inputSexo') Sexo
+                            .col-sm-5
+                                .input-group
+                                    label.radio-inline
+                                        input#inputSexo(type='radio', ng-model="usuario.str_sexo", name='sexo', value="Masculino", ng-required="true")
+                                        | Masculino
+                                    label.radio-inline
+                                        input#inputSexo(type='radio', ng-model="usuario.str_sexo", name='sexo', value="Femenino", ng-required="true")
+                                        | Femenino
+                                    span.help-block(ng-if="formRegistro.sexo.$error.required") Seleccione una opción
+                    //Botones de registro y cancelación
+                    .form-group
+                        .modal-footer
+                            a.btn.btn-default(href='#/login') Cancelar
+                            button.btn.btn-primary(type='submit', ng-click="registrar()", ng-disabled="formRegistro.$invalid || incorrectaContrasena()") Registrar

@@ -1,0 +1,82 @@
+.hero-unit
+  .container-fluid
+    .row
+      .col-md-12
+        #myCarousel.carousel.slider(data-interval='3000', data-ride='carousel')
+          ol.carousel-indicators
+            li.active(data-target='#myCarousel', data-slide-to='0')
+            li(data-target='#myCarousel', data-slide-to='1')
+            li(data-target='#myCarousel', data-slide-to='2')
+          .carousel-inner(role="listbox")
+            .item.active
+              img.img-responsive.first-slide(ng-src="{{slider[0].image}}")
+              .carousel-caption
+                p {{slider[0].title}}
+                //a(ng-click='logout()') LOGOUT
+            .item
+              img.img-responsive.second-slide(ng-src="{{slider[1].image}}")
+              .carousel-caption
+                p {{slider[1].title}}
+                //a(ng-click='logout()') LOGOUT
+            .item
+              img.img-responsive.third-slide(ng-src="{{slider[2].image}}")
+              .carousel-caption
+                p {{slider[2].title}}
+                //a(ng-click='logout()') LOGOUT
+          a.left.carousel-control(href='#myCarousel', role="button", data-slide='prev')
+            span.glyphicon.glyphicon-chevron-left(aria-hidden="true")
+            span.sr-only Previous
+          a.right.carousel-control(href='#myCarousel', role="button", data-slide='next')
+            span.glyphicon.glyphicon-chevron-right(aria-hidden="true")
+            span.sr-only Next
+    br
+    br
+    //a.btn.btn-default(role="button", ng-click='logout()') SALIR
+    //.container
+    .row(style="padding: 15px;")
+      .col-md-4
+        .thumbnail
+          img.img-circle.img-responsive(src='http://lorempixel.com/280/280/nature/', alt='placeholder', width="140", height="140")
+          .caption
+            h3(style="text-align:center") La naturaleza
+            p(style="text-align:center") La naturaleza, en su sentido más amplio, es equivalente al mundo natural,
+            | mundo material o universo material. El término hace referencia a los fenómeno
+            | del mundo físico, y también a la vida en general. Por lo general no incluye
+            | los objetos artificiales ni la intervención humana, a menos que se la califique
+            | de manera que haga referencia a ello, por ejemplo con expresiones como “naturaleza
+            | humana” o “la totalidad de la naturaleza”. La naturaleza también se encuentra diferenciada de lo sobrenatural.
+            br
+            br
+            p(style="text-align:center")
+              a.btn.btn-default(href="#", role="button") Ver detalles »
+      .col-md-4
+        .thumbnail
+          img.img-circle.img-responsive(src='http://lorempixel.com/280/280/sports/', alt='placeholder', width="140", height="140")
+          .caption
+            h3(style="text-align:center") El deporte
+            p(style="text-align:center") El deporte es una actividad reglamentada, normalmente de carácter competitivo, que en algunos
+            | casos mejora la condición física y psíquica de quien lo practica y tiene propiedades que lo diferencian del simple juego.
+            |  La RAE, en su Diccionario de la lengua española, define deporte como una «actividad física, ejercida como juego
+            | o competición, cuya práctica supone entrenamiento y sujeción a normas»; también, en una segunda acepción,
+            | más amplia, como «recreación, pasatiempo, placer, diversión o ejercicio físico, por lo común al aire libre».
+            br
+            br
+            p(style="text-align:center")
+              a.btn.btn-default(href="#", role="button") Ver detalles »
+      .col-md-4
+        .thumbnail
+          img.img-circle.img-responsive(src='http://lorempixel.com/280/280/food/', alt='placeholder', width="140", height="140")
+          .caption
+            h3(style="text-align:center") La comida
+            p(style="text-align:center") La comida es el conjunto de sustancias alimenticias que se consumen en diferentes momentos del día o noche.
+            | Una vez ingeridas por un organismo vivo, proveen de elementos para su nutrición y permiten su conservación.
+            | No obstante, el consumo de las sustancias que componen una comida también se realiza con fines fruitivos o
+            | gratificantes. Los seres humanos realizan varias comidas al día, y el número y contenido de cada una de éstas
+            | depende de un conjunto de factores tales como los ambientales y los sociales.
+            br
+            br
+            p(style="text-align:center")
+              a.btn.btn-default(href="#", role="button") Ver detalles »
+
+
+

@@ -1,0 +1,115 @@
+.hero-unit
+    //Formulario para ingreso de nueva variable
+    #nuevoVariableModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type="button", data-dismiss="modal")
+                        span(aria-hidden="true") &#215;
+                        span.sr-only Close
+                    h4#myModalLabel.modal-title Nueva Variable
+                    p#myModalLabel.modal-title Todos los campos son requeridos.
+                .modal-body
+                    //Aqui va el contenido pricipal - Ingreso de propiedades de la variable
+                    form#nuevaVariableForm(name="nuevaVariableForm")
+                        //Input de la descripción de la variable
+                        .form-group(ng-class="{'has-error': nuevaVariableForm.descripcion.$invalid && nuevaVariableForm.descripcion.$touched}")
+                            label(for="descripcion") Descripción
+                            .input-group
+                                .input-group-addon
+                                    i.glyphicon.glyphicon-bookmark
+                                input.form-control(type="text", name="descripcion", ng-required="true", id="descripcion", ng-model="variableNueva.descripcion",
+                                placeholder="Ingrese la descripcion de la macro-variable", maxlength="200")
+                                span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="nuevaVariableForm.descripcion.$invalid && nuevaVariableForm.descripcion.$touched")
+                            span.help-block(ng-if="nuevaVariableForm.descripcion.$error.required && nuevaVariableForm.descripcion.$touched") Campo requerido
+                .modal-footer
+                    button.btn.btn-default(type="button", data-dismiss="modal") Cancelar
+                    button.btn.btn-primary(type="button", data-dismiss="modal", ng-click="guardar(variableNueva)", ng-disabled="nuevaVariableForm.$invalid") Guardar
+
+    //Formulario para Ingreso de nueva subvariable
+    #nuevoSubVariableModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type="button", data-dismiss="modal")
+                        span(aria-hidden="true") &#215;
+                        span.sr-only Close
+                    h4#myModalLabel.modal-title Nueva Subvariable
+                    p#myModalLabel.modal-title Todos los campos son requeridos.
+                .modal-body
+                    //Aqui va el contenido pricipal - Ingreso de propiedades de subvariable.
+                    form#nuevaSubVariableForm(name="nuevaSubVariableForm")
+                        //Input de la descripcion de la descripción de subvariable
+                        .form-group(ng-class="{'has-error': nuevaSubVariableForm.descripcion.$invalid && nuevaSubVariableForm.descripcion.$touched}")
+                            label(for="descripcion") Descripción
+                            .input-group
+                                .input-group-addon
+                                    i.glyphicon.glyphicon-bookmark
+                                input.form-control(type="text", name="descripcion", ng-required="true", id="descripcion",
+                                ng-model="nuevaSubVariable.descripcion", placeholder="Ingrese la descripcion de la subvariable", maxlength="200")
+                                span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="nuevaSubVariableForm.descripcion.$invalid && nuevaSubVariableForm.descripcion.$touched")
+                            span.help-block(ng-if="nuevaSubVariableForm.descripcion.$error.required && nuevaSubVariableForm.descripcion.$touched") Campo requerido
+                        //Input de la descripcion del subgrupo
+                        .form-group(ng-class="{'has-error': nuevaSubVariableForm.descripcionPadre.$invalid && nuevaSubVariableForm.descripcionPadre.$touched}")
+                            label(for="descripcionPadre") Grupo padre
+                            .input-group
+                                .input-group-addon
+                                    i.glyphicon.glyphicon-bookmark
+                                input.form-control(type="text", name="descripcionPadre", ng-required="true", id="descripcionPadre",
+                                ng-model="nuevaSubVariable.descripcionPadre", maxlength="200", disabled="true")
+                                span.glyphicon.glyphicon-remove.form-control-feedback(ng-if="nuevaSubVariableForm.descripcionPadre.$invalid && nuevaSubVariableForm.descripcionPadre.$dirty")
+                            span.help-block(ng-if="nuevaSubVariableForm.descripcionPadre.$error.required && nuevaSubVariableForm.descripcionPadre.$touched") Campo requerido
+                .modal-footer
+                    button.btn.btn-default(type="button", data-dismiss="modal") Cancelar
+                    button.btn.btn-primary(type="button", data-dismiss="modal", ng-disabled="nuevaSubVariableForm.$invalid", ng-click="guardarSubVariable(nuevaSubVariable)") Guardar
+
+    //Formulario para verificacion de la eliminacion de una variable o subvariable
+    #eliminarVariableModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(type="button", data-dismiss="modal")
+                        span(aria-hidden="true") &#215;
+                        span.sr-only Close
+                    h4#myModalLabel.modal-title Eliminar variable
+                .modal-body
+                    p ¿Esta seguro que desea eliminar la variable:&nbsp;
+                        strong.text-lowercase
+                            |{{nombreVariable}}
+                        |?
+                .modal-footer
+                    button.btn.btn-default(type="button", data-dismiss="modal") Cancelar
+                    button.btn.btn-primary(type="button", data-dismiss="modal", ng-click="eliminar()") Eliminar
+    .container
+        .modal-header
+            h1#myModalLabel Gestión de Variables
+            p#myModalLabel La gestión de las variables es un proceso crítico del sistema, por lo tanto se debe realizar con detenimiento y de manera adecuada.
+
+        .modal-body
+            form.form-horizontal
+                .form-group
+                    button.btn.btn-primary(type="button", data-toggle="modal", data-target="#nuevoVariableModal") Nueva macro-variable
+                .form-group
+                    .input-group
+                        a.btn.btn-default(href="", ng-click="collapseAll()") Mostrar en linea
+                        a.btn.btn-default(href="", ng-click="expandAll()") Mostrar Desplegado
+                    .input-group
+                        .thumbnail
+                            script(type='text/ng-template', id='nodes_renderer.html')
+                                .tree-node.tree-node-content.bs-callout
+                                    a.btn.btn-clipboard.btn-xs(ng-if="node.nodes && node.nodes.length > 0", data-nodrag="", ng-click="toggle(this)")
+                                        span#enlaceGris.glyphicon(ng-class="{'glyphicon-triangle-right': collapsed, 'glyphicon-triangle-bottom': !collapsed}")
+                                    | {{node.str_descripcion}}
+                                    a.pull-right.btn.btn-clipboard.btn-xs(data-nodrag="", ng-click="remove2(this)", data-toggle="modal", data-target="#eliminarVariableModal")
+                                        span#enlaceRojo &nbsp;
+                                            small Eliminar
+                                    a.pull-right.btn.btn-clipboard.btn-xs(data-nodrag="", ng-click="newSubItem(this)", data-toggle="modal", data-target="#nuevoSubVariableModal",
+                                    style="margin-right: 8px;", ng-if="node.int_id_padre == null")
+                                        span#enlaceVerde &nbsp;
+                                            small Agregar
+                                ol(ui-tree-nodes="", ng-model="node.nodes", ng-class="{hidden: collapsed}")
+                                    li(ng-repeat="node in node.nodes", ui-tree-node="", ng-include="'nodes_renderer.html'")
+                            #tree-root(ui-tree="", data-drag-enabled="false")
+                                ol(ui-tree-nodes="", ng-model="data")
+                                    li(ng-repeat="node in data", ui-tree-node="", ng-include="'nodes_renderer.html'")
+        .modal-footer
